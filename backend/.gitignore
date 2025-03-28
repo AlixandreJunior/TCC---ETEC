@@ -1,0 +1,35 @@
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+/static/
+*.sqlite3
+media/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Virtual environment
+venv/
+env/
+ENV/
+*.egg-info/
+
+# Test coverage
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+*.tox
+
+# Migrations
+*/migrations/*
+
+# Docker
+docker-compose.override.yml
