@@ -16,7 +16,7 @@ media/
 .vscode/
 
 # Virtual environment
-venv/
+venv
 env/
 ENV/
 *.egg-info/
