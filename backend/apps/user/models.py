@@ -23,19 +23,22 @@ class UsersManager(BaseUserManager):
 
 class User(AbstractUser):
     class Meta:
+        app_label = 'user'
         verbose_name = "User"
         verbose_name_plural = "Users"
 
     avatar = models.ImageField(upload_to="avatar", validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])], null=True, blank=True)
     height = models.CharField(max_length=10, blank=True, null=True)
     weight = models.CharField(max_length=10, blank=True, null=True)
-    birth_date = models.DateField()
-    gender = models.CharField(max_length=10,choices=[{"Masculino" : 'Masculino'}, {'Feminino': 'Feminino'}, {"Outro", "Outro"}])
+    birth_date = models.DateField(null = True, blank=True)
+    gender = models.CharField(max_length=10,choices=[("Masculino" , 'Masculino'), ('Feminino', 'Feminino'), ("Outro", "Outro")])
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
     notifications = models.BooleanField(default=True)
 
     objects = UsersManager()
+    groups = None
+    user_permissions = None
 
     def __str__(self):
         return self.username
