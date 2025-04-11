@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator,MaxValueValidator
 from django.dispatch import receiver
 
 import os
@@ -28,8 +28,6 @@ class User(AbstractUser):
         verbose_name_plural = "Users"
 
     avatar = models.ImageField(upload_to="avatar", validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])], null=True, blank=True)
-    height = models.CharField(max_length=10, blank=True, null=True)
-    weight = models.CharField(max_length=10, blank=True, null=True)
     birth_date = models.DateField(null = True, blank=True)
     gender = models.CharField(max_length=10,choices=[("Masculino" , 'Masculino'), ('Feminino', 'Feminino'), ("Outro", "Outro")])
     created_at = models.DateTimeField(auto_now_add=True)
@@ -78,3 +76,8 @@ def delete_old_image(sender, instance, **kwargs):
     if old_instance.avatar and old_instance.avatar != instance.avatar:  
         if os.path.isfile(old_instance.avatar.path):  
             os.remove(old_instance.avatar.path)
+
+@receiver(models.signals.post_save, sender = User)
+def create_object_goal_for_user(sender, instance, created,**kwargs):
+    if created:
+        Goal.objects.get_or_create(user = instance)

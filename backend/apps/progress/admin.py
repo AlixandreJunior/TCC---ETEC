@@ -1,34 +1,38 @@
 from django.contrib import admin
-from . import models
-# Cadastro de Objetivos
-@admin.register(models.Objective)
-class ObjectivesAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'status')
-    search_fields = ('user__username', 'name')
+from .models import (Objective, DailyJournal, Achievement, MotivationalMessage, AchievementLog, AchievementRule
+)
+
+@admin.register(Objective)
+class ObjectiveAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'status')
     list_filter = ('status',)
+    search_fields = ('name', 'description', 'user__username')
 
-# Cadastro de Conquistas
-@admin.register(models.Achievement)
-class AchievementsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'description')
-    search_fields = ('name', 'category')
+@admin.register(DailyJournal)
+class DailyJournalAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'date')
+    list_filter = ('date',)
+    search_fields = ('title', 'content', 'user__username')
 
-# Cadastro de Mensagens Motivacionais
-@admin.register(models.MotivationalMessage)
-class MotivationalMessageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'message', 'category')
-    search_fields = ('message',)
+@admin.register(Achievement)
+class AchievementAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category')
     list_filter = ('category',)
+    search_fields = ('name', 'description')
 
-# Cadastro de Registro de Conquistas
-@admin.register(models.AchievementLog)
+@admin.register(MotivationalMessage)
+class MotivationalMessageAdmin(admin.ModelAdmin):
+    list_display = ('message', 'category')
+    list_filter = ('category',)
+    search_fields = ('message',)
+
+@admin.register(AchievementLog)
 class AchievementLogAdmin(admin.ModelAdmin):
     list_display = ('user', 'achievement', 'created_at')
+    list_filter = ('created_at', 'achievement')
     search_fields = ('user__username', 'achievement__name')
-    list_filter = ('created_at',)
 
-# Cadastro de Regras de Conquistas
-@admin.register(models.AchievementRule)
-class AchievementRulesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'achievement', 'min_event_count', 'streak_required')
+@admin.register(AchievementRule)
+class AchievementRuleAdmin(admin.ModelAdmin):
+    list_display = ('achievement', 'min_event_count', 'streak_required')
     search_fields = ('achievement__name',)
