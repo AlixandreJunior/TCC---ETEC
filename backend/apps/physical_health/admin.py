@@ -1,44 +1,38 @@
 from django.contrib import admin
-from . import models
+from .models import (Hydration, Exercise,PhysicalCheckin,Steps,ExerciseLog,PhysicalRecommendation,)
 
-# Cadastro de Hidratação
-@admin.register(models.Hydration)
+@admin.register(Hydration)
 class HydrationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'quantity', 'goal_achieved', 'date')
-    search_fields = ('user__username',)
-    list_filter = ('date', 'goal_achieved')
+    list_display = ("user", "quantity", "goal_achieved", "date")
+    list_filter = ("goal_achieved", "date")
+    search_fields = ("user__username",)
 
-# Cadastro de Exercícios
-@admin.register(models.Exercise)
+@admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'duration', 'difficulty')
-    search_fields = ('user__username', 'type')
-    list_filter = ('difficulty',)
+    list_display = ("name", "type", "duration", "difficulty")
+    search_fields = ("name", "type")
+    list_filter = ("difficulty",)
 
-# Cadastro de Check-in de Saúde Física
-@admin.register(models.PhysicalCheckin)
-class PhysicalCheckInAdmin(admin.ModelAdmin):
-    list_display = ('user', 'energy_level', 'sleep_quality', 'healthy_eating', 'activity_level', 'is_pain', 'checkin_date')
-    search_fields = ('user__username',)
-    list_filter = ('energy_level', 'sleep_quality', 'healthy_eating', 'activity_level', 'is_pain', 'checkin_date')
+@admin.register(PhysicalCheckin)
+class PhysicalCheckinAdmin(admin.ModelAdmin):
+    list_display = ("user", "date", "energy_level", "activity_level", "score")
+    list_filter = ("sleep_quality", "healthy_eating", "is_pain", "is_smoked", "is_alcohol", "date")
+    search_fields = ("user__username",)
 
-# Cadastro de Monitoramento de Passos
-@admin.register(models.Steps)
-class StepTrackerAdmin(admin.ModelAdmin):
-    list_display = ('user', 'steps', 'goal_achieved', 'date')
-    search_fields = ('user__username',)
-    list_filter = ('date', 'goal_achieved')
+@admin.register(Steps)
+class StepsAdmin(admin.ModelAdmin):
+    list_display = ("user", "steps", "goal_achieved", "date")
+    list_filter = ("goal_achieved", "date")
+    search_fields = ("user__username",)
 
-# Cadastro de Registros de Exercício
-@admin.register(models.ExerciseLog)
+@admin.register(ExerciseLog)
 class ExerciseLogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'exercise', 'created_at')
-    search_fields = ('user__username',)
-    list_filter = ('created_at',)
+    list_display = ("user", "exercise", "created_at", "rating")
+    list_filter = ("created_at", "rating")
+    search_fields = ("user__username", "exercise__name")
 
-# Cadastro de Diário Físico
-@admin.register(models.PhysicalJournalEntry)
-class PhysicalJournalEntryAdmin(admin.ModelAdmin):
-    list_display = ('checkin', 'created_at', 'description', )
-    search_fields = ('checkin__user__username', 'description')
-    list_filter = ('created_at',)
+@admin.register(PhysicalRecommendation)
+class PhysicalRecommendationAdmin(admin.ModelAdmin):
+    list_display = ("checkin", "created_at")
+    search_fields = ("checkin__user__username",)
+    readonly_fields = ("created_at",)

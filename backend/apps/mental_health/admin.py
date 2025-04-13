@@ -1,28 +1,31 @@
 from django.contrib import admin
-from . import models
-# Cadastro de Diário Emocional
-@admin.register(models.EmotionalJournal)
-class EmotionalDiaryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'checkin', 'content')
-    search_fields = ('checkin__user__username', 'content')
+from .models import Mindfulness, MentalCheckin, MindfulnessLog, MentalRecommendation
 
-# Cadastro de Atividades de Mindfulness
-@admin.register(models.Mindfulness)
-class MindfulnessActivityAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'duration', 'difficulty')
-    search_fields = ('user__username', 'type')
-    list_filter = ('difficulty',)
+@admin.register(Mindfulness)
+class MindfulnessAdmin(admin.ModelAdmin):
+    list_display = ('name', 'duration', 'type', 'difficulty')
+    search_fields = ('name', 'type', 'difficulty')
+    list_filter = ('type', 'difficulty')
 
-# Cadastro de Check-in de Bem-Estar
-@admin.register(models.WellnessCheckin)
-class WellnessCheckInAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mood', 'mood_intensity', 'stress_level', 'anxiety_level', 'score', 'date')
-    search_fields = ('user__username',)
+@admin.register(MentalCheckin)
+class MentalCheckinAdmin(admin.ModelAdmin):
+    list_display = ('user', 'date', 'mood', 'stress_level', 'anxiety_level', 'score')
     list_filter = ('mood', 'date')
-
-# Cadastro de Registros de Mindfulness
-@admin.register(models.MindfulnessLog)
-class MindfulnessLogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'mindfulness', 'created_at')
     search_fields = ('user__username',)
+    readonly_fields = ('score',)
+
+@admin.register(MindfulnessLog)
+class MindfulnessLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'mindfulness', 'rating', 'created_at')
     list_filter = ('created_at',)
+    search_fields = ('user__username', 'mindfulness__name')
+
+@admin.register(MentalRecommendation)
+class MentalRecommendationAdmin(admin.ModelAdmin):
+    list_display = ('checkin', 'get_user', 'created_at')
+    search_fields = ('checkin__user__username',)
+    readonly_fields = ('created_at',)
+
+    def get_user(self, obj):
+        return obj.checkin.user.username
+    get_user.short_description = 'User'
