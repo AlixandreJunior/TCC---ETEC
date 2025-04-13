@@ -84,18 +84,6 @@ class AchievementLog(models.Model):
 
     def __str__(self):
         return f"Conquista de {self.user.username}"
-
-    
-class MotivationalMessage(models.Model):
-    class Meta:
-        verbose_name = 'Motivational Message'
-        verbose_name_plural = "Motivational Messages"
-
-    message = models.TextField()
-    category = models.CharField(max_length=50)
-
-    def __str__(self):
-        return f"Mensagem: {self.message}"
     
 #Signals
 

@@ -65,7 +65,7 @@ class MentalRecommendation(models.Model):
     def __str__(self):
         return f"Recomendação Mental para {self.user.username} em {self.created_at.strftime('%d/%m/%Y')}"
     
-class DailyJournal(models.Model):
+class Diary(models.Model):
     class Meta:
         verbose_name = "Diário Pessoal"
         verbose_name_plural = "Diários Pessoais"
