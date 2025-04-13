@@ -79,21 +79,7 @@ class ExerciseLog(models.Model):
     def __str__(self):
         return f"Registro de Exercircio de {self.user.username}"
 
-class PhysicalRecommendation(models.Model):
-    checkin = models.ForeignKey(PhysicalCheckin, on_delete=models.CASCADE,)
-    recommendation_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Recomendação para {self.checkin.user.username} em {self.created_at.date()}"
-
 #Signals
-
-@receiver(models.signals.post_save, sender=PhysicalCheckin)
-def create_physical_recommendation(sender, instance, created, **kwargs):
-    if created:
-        recommendation_text = physic_generate_recommendation(instance)
-        PhysicalRecommendation.objects.create(checkin=instance, text=recommendation_text)
 
 @receiver(models.signals.post_save, sender= Hydration)
 def hydratation_goal_achieved(sender, instance, created, **kwargs):

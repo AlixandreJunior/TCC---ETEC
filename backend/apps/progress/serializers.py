@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import (UserProgress, Objective, Achievement, AchievementLog, MotivationalMessage )
+from apps.progress.models import UserProgress, Objective, Achievement, AchievementLog
 
 class UserProgressSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -27,8 +27,3 @@ class AchievementLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = AchievementLog
         fields = ['id','user','achievement','date_awarded',]
-
-class MotivationalMessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MotivationalMessage
-        fields = ['id','message', 'category',]

@@ -52,18 +52,6 @@ class MindfulnessLog(models.Model):
 
     def __str__(self):
         return f"Registro de Midnfullnes de {self.user.username} em {self.created_at}"
-
-class MentalRecommendation(models.Model):
-    class Meta:
-        verbose_name = 'Mental Recommendation'
-        verbose_name_plural = 'Mental Recommendations'
-
-    checkin = models.ForeignKey(MentalCheckin, on_delete=models.CASCADE)
-    recommendation = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Recomendação Mental para {self.user.username} em {self.created_at.strftime('%d/%m/%Y')}"
     
 class Diary(models.Model):
     class Meta:
@@ -78,9 +66,3 @@ class Diary(models.Model):
 
     def __str__(self):
         return f"Diário de {self.user.username} em {self.date.strftime('%d/%m/%Y')}"
-    
-@receiver(models.signals.post_save, sender=MentalCheckin)
-def create_mental_recommendation(sender, instance, created, **kwargs):
-    if created:
-        recommendation_text = mental_generate_recommendation(instance)
-        MentalRecommendation.objects.create(checkin=instance, text=recommendation_text)

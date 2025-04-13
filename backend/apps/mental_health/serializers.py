@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import (Mindfulness, MentalCheckin, MindfulnessLog, MentalRecommendation, Diary )
+from apps.mental_health.models import Mindfulness, MentalCheckin, MindfulnessLog, Diary 
+from utils.generate_recomendation import mental_generate_recommendation
 
 class MindfulnessSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,6 +9,7 @@ class MindfulnessSerializer(serializers.ModelSerializer):
 
 class MentalCheckinSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    recommendation = serializers.SerializerMethodField()
 
     class Meta:
         model = MentalCheckin
@@ -21,8 +23,12 @@ class MentalCheckinSerializer(serializers.ModelSerializer):
             'is_overwhelmed',
             'notes',
             'score',
-            'date'
+            'date',
+            'recommendation'
         ]
+
+    def get_recommendation(self, obj):
+        mental_generate_recommendation(obj)
 
 class MindfulnessLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -31,13 +37,6 @@ class MindfulnessLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = MindfulnessLog
         fields = ['id', 'user', 'mindfulness', 'rating', 'created_at']
-
-class MentalRecommendationSerializer(serializers.ModelSerializer):
-    checkin = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = MentalRecommendation
-        fields = ['id', 'checkin', 'recommendation', 'created_at']
 
 class DiarySerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)

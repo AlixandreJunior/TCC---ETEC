@@ -5,9 +5,8 @@ from .models import (
     PhysicalCheckin,
     Steps,
     ExerciseLog,
-    PhysicalRecommendation
 )
-
+from utils.generate_recomendation import physic_generate_recommendation
 
 class HydrationSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -16,15 +15,14 @@ class HydrationSerializer(serializers.ModelSerializer):
         model = Hydration
         fields = ['id', 'user', 'quantity', 'goal_achieved', 'date']
 
-
 class ExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
         fields = ['id', 'name', 'duration', 'type', 'description', 'difficulty']
 
-
 class PhysicalCheckinSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    recommendation = serializers.SerializerMethodField()
 
     class Meta:
         model = PhysicalCheckin
@@ -40,8 +38,11 @@ class PhysicalCheckinSerializer(serializers.ModelSerializer):
             'is_used_screen_too_much',
             'notes',
             'date',
+            'recommendation'
         ]
 
+    def get_recommendation(self, obj):
+        physic_generate_recommendation(obj)
 
 class StepsSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -58,11 +59,3 @@ class ExerciseLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseLog
         fields = ['id', 'user', 'exercise', 'rating', 'created_at']
-
-
-class PhysicalRecommendationSerializer(serializers.ModelSerializer):
-    checkin = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = PhysicalRecommendation
-        fields = ['id', 'checkin', 'recommendation_text', 'created_at']
