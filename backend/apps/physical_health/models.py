@@ -40,17 +40,14 @@ class PhysicalCheckin(models.Model):
         verbose_name_plural = "Physical Check-Ins"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    height = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0.5), MaxValueValidator(2.5)])
-    weight = models.FloatField(null=True, blank=True, validators=[MinValueValidator(10), MaxValueValidator(300)])
     energy_level = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     activity_level = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     sleep_quality = models.CharField(max_length=50, choices=CHOICES)
     healthy_eating = models.CharField(max_length=50, choices=CHOICES )
     is_pain = models.BooleanField()
-    is_smoked = models.BooleanField()
-    is_alcohol = models.BooleanField()
+    is_took_medicine = models.BooleanField()
+    is_used_screen_too_much = models.BooleanField()
     notes = models.TextField(blank=True, null=True)
-    score = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
