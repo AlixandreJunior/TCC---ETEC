@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from django.dispatch import receiver
-from backend.utils.check_achievement_middleware import check_achievements
 from apps.user.models import User
 
 class UserProgress(models.Model):

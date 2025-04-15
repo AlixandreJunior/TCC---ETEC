@@ -1,3 +1,21 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
 
-# Create your views here.
+class ProgressView(APIView):
+    def get(self, request):
+        ...
+
+class ObjectiveListView(APIView):
+    def get(self, request):
+        ...
+
+class ObjectiveCreateView(APIView):
+    def post(self, request):
+        ...
+
+class AchievementsView(APIView):
+    def get(self, request):
+        ...
+
+class AchievementsUserView(APIView):
+    def get(self, request):
+        ...
