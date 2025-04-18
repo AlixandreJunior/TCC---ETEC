@@ -22,6 +22,12 @@ class UserCreateView(CreateModelMixin, GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response("Usuario criado com sucesso.", status=status.HTTP_201_CREATED)
 
 class UserUpdateView(UpdateModelMixin, GenericAPIView):
     permission_classes = [IsAuthenticated]

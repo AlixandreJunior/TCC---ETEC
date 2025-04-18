@@ -49,7 +49,8 @@ class UserTest(APITestCase,UserMixin ):
         response = self.client.post(api_url, data=valid_data, format='json')
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(models.User.objects.filter(username = "novouser").exists(), True)
+        self.assertEqual(response.json(), "Usuario criado com sucesso.")
+
 
     def test_post_user_create_with_avatar(self):
         api_url = reverse('user:user_create')

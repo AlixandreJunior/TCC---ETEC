@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views
 
-urlpatterns = [
-    path('', views.ProgressView.as_view()),
-    path('objective/', views.ObjectiveListView.as_view()),
-    path('objective/create/', views.ObjectiveCreateView.as_view()),
+app_name = 'progress'
 
-    path('achievements/', views.AchievementsView.as_view()),
-    path('achievements/user/', views.AchievementsUserView.as_view()),
+urlpatterns = [
+    path('', views.ProgressView.as_view(), name='progress'),
+    path('objective/', views.ObjectiveListView.as_view(), name="objective"),
+    path('objective/create/', views.ObjectiveCreateView.as_view(), name="objective_create"),
+
+    path('achievements/', views.AchievementsView.as_view(), name="achievements"),
+    path('achievements/user/', views.AchievementsUserView.as_view(), name="achievements_user"),
 ]
