@@ -3,8 +3,6 @@ from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.user.models import User
 
-from utils.generate_recomendation import mental_generate_recommendation
-
 MOOD_CHOICES = [("Feliz", "Feliz"), ("Triste", "Triste"), ("Ansioso", "Ansioso"), ("Calmo", "Calmo"), ("Estressado", "Estressado")]
 
 class Mindfulness(models.Model):
