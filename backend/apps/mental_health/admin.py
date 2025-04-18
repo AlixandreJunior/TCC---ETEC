@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Mindfulness, MentalCheckin, MindfulnessLog, MentalRecommendation
+from .models import Mindfulness, MentalCheckin, MindfulnessLog
 
 @admin.register(Mindfulness)
 class MindfulnessAdmin(admin.ModelAdmin):
@@ -19,13 +19,3 @@ class MindfulnessLogAdmin(admin.ModelAdmin):
     list_display = ('user', 'mindfulness', 'rating', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('user__username', 'mindfulness__name')
-
-@admin.register(MentalRecommendation)
-class MentalRecommendationAdmin(admin.ModelAdmin):
-    list_display = ('checkin', 'get_user', 'created_at')
-    search_fields = ('checkin__user__username',)
-    readonly_fields = ('created_at',)
-
-    def get_user(self, obj):
-        return obj.checkin.user.username
-    get_user.short_description = 'User'

@@ -15,15 +15,14 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
-            'password'
+            'password',
             'avatar',
             'birth_date',
             'gender',
             'created_at',
-            'is_active',
             'notifications',
         ]
-        read_only_fields = ['id', 'created_at', 'is_active']
+        read_only_fields = ['id', 'created_at',]
     
     def validate_password(self, value):
         try:
