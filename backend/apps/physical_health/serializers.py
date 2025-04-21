@@ -1,18 +1,18 @@
 from rest_framework import serializers
 from .models import (
-    Hydration,
+    HydrationLog,
     Exercise,
     PhysicalCheckin,
-    Steps,
+    StepsLog,
     ExerciseLog,
 )
 from utils.generate_recomendation import physic_generate_recommendation
 
-class HydrationSerializer(serializers.ModelSerializer):
+class HydrationLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
-        model = Hydration
+        model = HydrationLog
         fields = ['id', 'user', 'quantity', 'goal_achieved', 'date']
 
 class ExerciseSerializer(serializers.ModelSerializer):
@@ -44,11 +44,11 @@ class PhysicalCheckinSerializer(serializers.ModelSerializer):
     def get_recommendation(self, obj):
         physic_generate_recommendation(obj)
 
-class StepsSerializer(serializers.ModelSerializer):
+class StepsLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
-        model = Steps
+        model = StepsLog
         fields = ['id', 'user', 'steps', 'goal_achieved', 'date']
 
 

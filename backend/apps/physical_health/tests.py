@@ -1,3 +1,6 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
+from utils.usermixin import UserMixin
 
-# Create your tests here.
+class PhysicalHealthTests(APITestCase, UserMixin):
+    def setUp(self):
+        self.user = self.make_user_auth()

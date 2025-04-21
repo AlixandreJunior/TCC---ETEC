@@ -7,7 +7,7 @@ from utils.generate_recomendation import physic_generate_recommendation
 
 CHOICES = [('Ruim', 'Ruim'), ('Medio', 'Medio'), ('Bom', 'Bom')]
 
-class Hydration(models.Model):
+class HydrationLog(models.Model):
     class Meta:
         verbose_name = 'Hydration'
         verbose_name_plural = "Hydration"
@@ -53,7 +53,7 @@ class PhysicalCheckin(models.Model):
     def __str__(self):
         return f"Check In Fisico de {self.user.username} em {self.checkin_date}"
 
-class Steps(models.Model):
+class StepsLog(models.Model):
     class Meta:
         verbose_name = 'Exercise Log'
         verbose_name_plural = "Exercise Logs"
