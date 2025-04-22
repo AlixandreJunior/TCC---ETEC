@@ -9,10 +9,9 @@ class MindfulnessAdmin(admin.ModelAdmin):
 
 @admin.register(MentalCheckin)
 class MentalCheckinAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'mood', 'stress_level', 'anxiety_level', 'score')
+    list_display = ('user', 'date', 'mood', 'stress_level', 'anxiety_level')
     list_filter = ('mood', 'date')
     search_fields = ('user__username',)
-    readonly_fields = ('score',)
 
 @admin.register(MindfulnessLog)
 class MindfulnessLogAdmin(admin.ModelAdmin):

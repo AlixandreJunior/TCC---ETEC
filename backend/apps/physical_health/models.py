@@ -3,8 +3,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from apps.user.models import User, Goal
 
-from utils.generate_recomendation import physic_generate_recommendation
-
 CHOICES = [('Ruim', 'Ruim'), ('Medio', 'Medio'), ('Bom', 'Bom')]
 
 class HydrationLog(models.Model):
@@ -81,7 +79,7 @@ class ExerciseLog(models.Model):
 
 #Signals
 
-@receiver(models.signals.post_save, sender= Hydration)
+@receiver(models.signals.post_save, sender= HydrationLog)
 def hydratation_goal_achieved(sender, instance, created, **kwargs):
     goals_user = Goal.objects.filter(user = instance.user).first()
 
@@ -89,7 +87,7 @@ def hydratation_goal_achieved(sender, instance, created, **kwargs):
         instance.goal_achieved = True
         instance.save(update_fields=["goal_achieved"])
 
-@receiver(models.signals.post_save, sender= Steps)
+@receiver(models.signals.post_save, sender= StepsLog)
 def steps_goal_achieved(sender, instance, created, **kwargs):
     goals_user = Goal.objects.filter(user = instance.user).first()
 

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from apps.mental_health.models import Mindfulness, MentalCheckin, MindfulnessLog, Diary 
 from utils.generate_recomendation import mental_generate_recommendation
@@ -26,6 +27,23 @@ class MentalCheckinSerializer(serializers.ModelSerializer):
             'date',
             'recommendation'
         ]
+
+    def validate(self, data):
+        """
+        Valida se o último Check-In foi feito há menos de 24 horas.
+
+        - Obtém o último Check-In da bolha associada.
+        - Se o último Check-In tiver menos de 24 horas, impede a criação de um novo.
+        """
+        user = data.get('user')  
+        ultimo_checkin = MentalCheckin.objects.filter(user = user).order_by('-date').first()
+
+        if ultimo_checkin:
+            tempo_desde_ultimo = timezone.now() - ultimo_checkin.date
+            if tempo_desde_ultimo < timezone.timedelta(days=1):
+                raise serializers.ValidationError("Um novo Check-in só pode ser feito após 24 horas.")
+
+        return data
 
     def get_recommendation(self, obj):
         mental_generate_recommendation(obj)

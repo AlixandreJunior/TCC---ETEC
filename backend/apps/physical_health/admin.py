@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import (Hydration, Exercise,PhysicalCheckin,Steps,ExerciseLog)
+from .models import (HydrationLog, Exercise,PhysicalCheckin,StepsLog,ExerciseLog)
 
-@admin.register(Hydration)
+@admin.register(HydrationLog)
 class HydrationAdmin(admin.ModelAdmin):
     list_display = ("user", "quantity", "goal_achieved", "date")
     list_filter = ("goal_achieved", "date")
@@ -19,7 +19,7 @@ class PhysicalCheckinAdmin(admin.ModelAdmin):
     list_filter = ("sleep_quality", "healthy_eating", "is_pain", "date")
     search_fields = ("user__username",)
 
-@admin.register(Steps)
+@admin.register(StepsLog)
 class StepsAdmin(admin.ModelAdmin):
     list_display = ("user", "steps", "goal_achieved", "date")
     list_filter = ("goal_achieved", "date")
