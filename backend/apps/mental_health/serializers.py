@@ -8,13 +8,13 @@ class MindfulnessSerializer(serializers.ModelSerializer):
         model = Mindfulness
         fields = ['id', 'name', 'duration', 'type', 'description', 'difficulty']
 
-class MentalCheckinSerializer(serializers.ModelSerializer):
+class MentalCheckinWriteSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    recommendation = serializers.SerializerMethodField()
 
     class Meta:
         model = MentalCheckin
-        fields = ['id',
+        fields = [
+            'id',
             'user',
             'mood',
             'stress_level',
@@ -23,34 +23,48 @@ class MentalCheckinSerializer(serializers.ModelSerializer):
             'is_low_self_esteem',
             'is_overwhelmed',
             'notes',
-            'score',
             'date',
-            'recommendation'
         ]
+        read_only_fields = ['id', 'user', 'date']
 
     def validate(self, data):
-        """
-        Valida se o último Check-In foi feito há menos de 24 horas.
+        user = self.context['request'].user
+        today = timezone.now().date()
 
-        - Obtém o último Check-In da bolha associada.
-        - Se o último Check-In tiver menos de 24 horas, impede a criação de um novo.
-        """
-        user = data.get('user')  
-        ultimo_checkin = MentalCheckin.objects.filter(user = user).order_by('-date').first()
-
-        if ultimo_checkin:
-            tempo_desde_ultimo = timezone.now() - ultimo_checkin.date
-            if tempo_desde_ultimo < timezone.timedelta(days=1):
-                raise serializers.ValidationError("Um novo Check-in só pode ser feito após 24 horas.")
+        if MentalCheckin.objects.filter(user=user, date = today).exists():
+            raise serializers.ValidationError("Um novo check-in só pode ser feito após 24 horas.")
 
         return data
 
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
+class MentalCheckinReadSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Ou PrimaryKeyRelatedField, se quiser mostrar o ID
+    recommendation = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MentalCheckin
+        fields = [
+            'id',
+            'user',
+            'mood',
+            'stress_level',
+            'anxiety_level',
+            'is_feeling_lonely',
+            'is_low_self_esteem',
+            'is_overwhelmed',
+            'notes',
+            'date',
+            'recommendation',
+        ]
+
     def get_recommendation(self, obj):
-        mental_generate_recommendation(obj)
+        return mental_generate_recommendation(obj)
 
 class MindfulnessLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    mindfulness = MindfulnessSerializer(read_only=True)
 
     class Meta:
         model = MindfulnessLog
@@ -62,3 +76,12 @@ class DiarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
         fields = ['id', 'user', 'title', 'content', 'date']
+
+    def validate(self, data):
+        user = self.context['request'].user
+        today = timezone.now().date()
+
+        if Diary.objects.filter(user=user, date = today).exists():
+            raise serializers.ValidationError("Um novo diario só pode ser feito após 24 horas.")
+
+        return data
