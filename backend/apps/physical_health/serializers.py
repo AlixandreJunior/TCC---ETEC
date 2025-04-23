@@ -21,7 +21,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
         model = Exercise
         fields = ['id', 'name', 'duration', 'type', 'description', 'difficulty']
 
-class PhysicalCheckinSerializer(serializers.ModelSerializer):
+class PhysicalCheckinReadSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     recommendation = serializers.SerializerMethodField()
 
@@ -41,25 +41,33 @@ class PhysicalCheckinSerializer(serializers.ModelSerializer):
             'date',
             'recommendation'
         ]
+        read_only_fields = ('date', 'user')
+
+    def get_recommendation(self, obj):
+        return physic_generate_recommendation(obj)
+
+class PhysicalCheckinWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhysicalCheckin
+        fields = [
+            'energy_level',
+            'activity_level',
+            'sleep_quality',
+            'healthy_eating',
+            'is_pain',
+            'is_took_medicine',
+            'is_used_screen_too_much',
+            'notes',
+        ]
+
     def validate(self, data):
-        """
-        Valida se o último Check-In foi feito há menos de 24 horas.
+        user = self.context['request'].user
+        today = timezone.localdate()
 
-        - Obtém o último Check-In da bolha associada.
-        - Se o último Check-In tiver menos de 24 horas, impede a criação de um novo.
-        """
-        user = data.get('user')  
-        ultimo_checkin = PhysicalCheckin.objects.filter(user = user).order_by('-date').first()
-
-        if ultimo_checkin:
-            tempo_desde_ultimo = timezone.now() - ultimo_checkin.date
-            if tempo_desde_ultimo < timezone.timedelta(days=1):
-                raise serializers.ValidationError("Um novo Check-in só pode ser feito após 24 horas.")
+        if PhysicalCheckin.objects.filter(user=user, date=today).exists():
+            raise serializers.ValidationError("Um novo check-in só pode ser feito após 24 horas.")
 
         return data
-    
-    def get_recommendation(self, obj):
-        physic_generate_recommendation(obj)
 
 class StepsLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -71,7 +79,6 @@ class StepsLogSerializer(serializers.ModelSerializer):
 
 class ExerciseLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    exercise = ExerciseSerializer(read_only=True)
 
     class Meta:
         model = ExerciseLog

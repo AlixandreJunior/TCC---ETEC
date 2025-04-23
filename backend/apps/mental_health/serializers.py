@@ -29,7 +29,8 @@ class MentalCheckinWriteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user = self.context['request'].user
-        today = timezone.now().date()
+        today = timezone.localdate()
+
 
         if MentalCheckin.objects.filter(user=user, date = today).exists():
             raise serializers.ValidationError("Um novo check-in só pode ser feito após 24 horas.")
@@ -79,7 +80,8 @@ class DiarySerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user = self.context['request'].user
-        today = timezone.now().date()
+        today = timezone.localdate()
+
 
         if Diary.objects.filter(user=user, date = today).exists():
             raise serializers.ValidationError("Um novo diario só pode ser feito após 24 horas.")

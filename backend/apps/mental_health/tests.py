@@ -186,7 +186,7 @@ class MentalHealthTests(APITestCase, UserMixin):
         response = self.client.post(url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json().get('non_field_errors')[0], 'Um novo Check-in só pode ser feito após 24 horas.')
+        self.assertEqual(response.json().get('non_field_errors')[0], 'Um novo check-in só pode ser feito após 24 horas.')
 
     def test_post_mentalcheckin_create_fail_for_unauthorized(self):
         url = reverse('mental_health:checkin_create')

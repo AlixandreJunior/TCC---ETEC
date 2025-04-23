@@ -9,7 +9,7 @@ from apps.physical_health import serializers, models
 
 class CheckInListView(GenericAPIView, ListModelMixin):
     permission_classes = [IsAuthenticated]
-    serializer_class = serializers.PhysicalCheckinSerializer
+    serializer_class = serializers.PhysicalCheckinReadSerializer
     
     def get_queryset(self):
         queryset = models.PhysicalCheckin.objects.filter(user = self.request.user)
@@ -22,7 +22,10 @@ class CheckInListView(GenericAPIView, ListModelMixin):
 
 class CheckInCreateView(GenericAPIView, CreateModelMixin):
     permission_classes = [IsAuthenticated]
-    serializer_class = serializers.PhysicalCheckinSerializer
+    serializer_class = serializers.PhysicalCheckinWriteSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -44,12 +47,15 @@ class StepsLogListView(GenericAPIView, ListModelMixin):
             raise NotFound("Registros de Passos não encontrados.")
         return queryset
     
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
     
 class StepsLogRegisterView(GenericAPIView, CreateModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.StepsLogSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -64,7 +70,6 @@ class StepsLogRegisterView(GenericAPIView, CreateModelMixin):
 class HydratationLogListView(GenericAPIView, ListModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.HydrationLogSerializer
-
     def get_queryset(self):
         queryset = models.HydrationLog.objects.filter(user = self.request.user)
         if not queryset.exists():
@@ -77,6 +82,9 @@ class HydratationLogListView(GenericAPIView, ListModelMixin):
 class HydratationLogRegisterView(GenericAPIView, CreateModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.HydrationLogSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -117,6 +125,9 @@ class ExerciseLogView(GenericAPIView, ListModelMixin):
 class ExerciseLogRegisterView(GenericAPIView, CreateModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.ExerciseLogSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
