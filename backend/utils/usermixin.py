@@ -25,6 +25,9 @@ class UserMixin:
             is_active = True
         )
 
+        user.set_password(password)
+        user.save()
+
         self.client.force_authenticate(user)
 
         return user
@@ -53,6 +56,9 @@ class UserMixin:
             is_active = True
         )
 
+        user.set_password(password)
+        user.save()
+
         return user
     
     def make_user_not_active(
@@ -79,4 +85,7 @@ class UserMixin:
             is_active = False
         )
 
+        user.set_password(password)
+        user.save()
+        
         return user
