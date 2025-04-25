@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import (Hydration, Exercise,PhysicalCheckin,Steps,ExerciseLog,PhysicalRecommendation,)
+from .models import (HydrationLog, Exercise,PhysicalCheckin,StepsLog,ExerciseLog)
 
-@admin.register(Hydration)
+@admin.register(HydrationLog)
 class HydrationAdmin(admin.ModelAdmin):
     list_display = ("user", "quantity", "goal_achieved", "date")
     list_filter = ("goal_achieved", "date")
@@ -15,11 +15,11 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(PhysicalCheckin)
 class PhysicalCheckinAdmin(admin.ModelAdmin):
-    list_display = ("user", "date", "energy_level", "activity_level", "score")
-    list_filter = ("sleep_quality", "healthy_eating", "is_pain", "is_smoked", "is_alcohol", "date")
+    list_display = ("user", "date", "energy_level", "activity_level",)
+    list_filter = ("sleep_quality", "healthy_eating", "is_pain", "date")
     search_fields = ("user__username",)
 
-@admin.register(Steps)
+@admin.register(StepsLog)
 class StepsAdmin(admin.ModelAdmin):
     list_display = ("user", "steps", "goal_achieved", "date")
     list_filter = ("goal_achieved", "date")
@@ -30,9 +30,3 @@ class ExerciseLogAdmin(admin.ModelAdmin):
     list_display = ("user", "exercise", "created_at", "rating")
     list_filter = ("created_at", "rating")
     search_fields = ("user__username", "exercise__name")
-
-@admin.register(PhysicalRecommendation)
-class PhysicalRecommendationAdmin(admin.ModelAdmin):
-    list_display = ("checkin", "created_at")
-    search_fields = ("checkin__user__username",)
-    readonly_fields = ("created_at",)

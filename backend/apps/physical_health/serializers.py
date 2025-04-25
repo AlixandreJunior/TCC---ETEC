@@ -1,18 +1,19 @@
+from django.utils import timezone
 from rest_framework import serializers
 from .models import (
-    Hydration,
+    HydrationLog,
     Exercise,
     PhysicalCheckin,
-    Steps,
+    StepsLog,
     ExerciseLog,
 )
 from utils.generate_recomendation import physic_generate_recommendation
 
-class HydrationSerializer(serializers.ModelSerializer):
+class HydrationLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
-        model = Hydration
+        model = HydrationLog
         fields = ['id', 'user', 'quantity', 'goal_achieved', 'date']
 
 class ExerciseSerializer(serializers.ModelSerializer):
@@ -20,7 +21,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
         model = Exercise
         fields = ['id', 'name', 'duration', 'type', 'description', 'difficulty']
 
-class PhysicalCheckinSerializer(serializers.ModelSerializer):
+class PhysicalCheckinReadSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     recommendation = serializers.SerializerMethodField()
 
@@ -40,21 +41,44 @@ class PhysicalCheckinSerializer(serializers.ModelSerializer):
             'date',
             'recommendation'
         ]
+        read_only_fields = ('date', 'user')
 
     def get_recommendation(self, obj):
-        physic_generate_recommendation(obj)
+        return physic_generate_recommendation(obj)
 
-class StepsSerializer(serializers.ModelSerializer):
+class PhysicalCheckinWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhysicalCheckin
+        fields = [
+            'energy_level',
+            'activity_level',
+            'sleep_quality',
+            'healthy_eating',
+            'is_pain',
+            'is_took_medicine',
+            'is_used_screen_too_much',
+            'notes',
+        ]
+
+    def validate(self, data):
+        user = self.context['request'].user
+        today = timezone.localdate()
+
+        if PhysicalCheckin.objects.filter(user=user, date=today).exists():
+            raise serializers.ValidationError("Um novo check-in só pode ser feito após 24 horas.")
+
+        return data
+
+class StepsLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
-        model = Steps
+        model = StepsLog
         fields = ['id', 'user', 'steps', 'goal_achieved', 'date']
 
 
 class ExerciseLogSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    exercise = ExerciseSerializer(read_only=True)
 
     class Meta:
         model = ExerciseLog

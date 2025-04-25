@@ -94,3 +94,8 @@ def set_max_streak(sender, instance, **kwargs):
     if streak > max_streak:
         max_streak = streak
         instance.save(update_fields=["max_streak"])
+
+@receiver(models.signals.post_save, sender = User)
+def set_max_streak(sender, instance, created, **kwargs):
+    if created:
+        UserProgress.objects.get_or_create(user = instance)

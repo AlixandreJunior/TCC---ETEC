@@ -3,11 +3,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from apps.user.models import User, Goal
 
-from utils.generate_recomendation import physic_generate_recommendation
-
 CHOICES = [('Ruim', 'Ruim'), ('Medio', 'Medio'), ('Bom', 'Bom')]
 
-class Hydration(models.Model):
+class HydrationLog(models.Model):
     class Meta:
         verbose_name = 'Hydration'
         verbose_name_plural = "Hydration"
@@ -35,6 +33,13 @@ class Exercise(models.Model):
         return f"Exercicio {self.name}"
 
 class PhysicalCheckin(models.Model):
+    class QualityChoices(models.TextChoices):
+        EXCELENTE = 'excelente', 'Excelente'
+        BOA = 'boa', 'Boa'
+        REGULAR = 'regular', 'Regular'
+        RUIM = 'ruim', 'Ruim'
+        PESSIMO = 'pessimo', 'Pessimo'
+
     class Meta:
         verbose_name = 'Physical Check-In'
         verbose_name_plural = "Physical Check-Ins"
@@ -42,8 +47,8 @@ class PhysicalCheckin(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     energy_level = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     activity_level = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
-    sleep_quality = models.CharField(max_length=50, choices=CHOICES)
-    healthy_eating = models.CharField(max_length=50, choices=CHOICES )
+    sleep_quality = models.CharField(max_length=50, choices=QualityChoices.choices)
+    healthy_eating = models.CharField(max_length=50, choices=QualityChoices.choices)
     is_pain = models.BooleanField()
     is_took_medicine = models.BooleanField()
     is_used_screen_too_much = models.BooleanField()
@@ -51,9 +56,9 @@ class PhysicalCheckin(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"Check In Fisico de {self.user.username} em {self.checkin_date}"
+        return f"Check In Fisico de {self.user.username} em {self.date}"
 
-class Steps(models.Model):
+class StepsLog(models.Model):
     class Meta:
         verbose_name = 'Exercise Log'
         verbose_name_plural = "Exercise Logs"
@@ -81,7 +86,7 @@ class ExerciseLog(models.Model):
 
 #Signals
 
-@receiver(models.signals.post_save, sender= Hydration)
+@receiver(models.signals.post_save, sender= HydrationLog)
 def hydratation_goal_achieved(sender, instance, created, **kwargs):
     goals_user = Goal.objects.filter(user = instance.user).first()
 
@@ -89,7 +94,7 @@ def hydratation_goal_achieved(sender, instance, created, **kwargs):
         instance.goal_achieved = True
         instance.save(update_fields=["goal_achieved"])
 
-@receiver(models.signals.post_save, sender= Steps)
+@receiver(models.signals.post_save, sender= StepsLog)
 def steps_goal_achieved(sender, instance, created, **kwargs):
     goals_user = Goal.objects.filter(user = instance.user).first()
 

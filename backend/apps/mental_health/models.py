@@ -3,8 +3,6 @@ from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.user.models import User
 
-MOOD_CHOICES = [("Feliz", "Feliz"), ("Triste", "Triste"), ("Ansioso", "Ansioso"), ("Calmo", "Calmo"), ("Estressado", "Estressado")]
-
 class Mindfulness(models.Model):
     class Meta:
         verbose_name = 'Mindfulness'
@@ -20,19 +18,25 @@ class Mindfulness(models.Model):
         return f"Mindfulness {self.name}"
 
 class MentalCheckin(models.Model):
+    class MoodChoices(models.TextChoices):
+        MUITO_FELIZ = 'Muito Feliz', 'Muito Feliz'
+        FELIZ = 'Feliz', 'Feliz'
+        NEUTRO = 'Neutro', 'Neutro'
+        TRISTE = 'Triste', 'Triste'
+        MUITO_TRISTE = 'Muito Triste', 'Muito Triste'
+
     class Meta:
         verbose_name = 'Wellness Check-In'
         verbose_name_plural = "Wellness Check-ins"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    mood = models.CharField(max_length=50, choices=MOOD_CHOICES)
+    mood = models.CharField(max_length=50, choices=MoodChoices.choices)
     stress_level = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(10)])
     anxiety_level = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(10)])
     is_feeling_lonely = models.BooleanField() 
     is_low_self_esteem = models.BooleanField() 
     is_overwhelmed = models.BooleanField() 
     notes = models.TextField(blank=True, null=True)
-    score = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -60,7 +64,7 @@ class Diary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     content = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"Diário de {self.user.username} em {self.date.strftime('%d/%m/%Y')}"

@@ -1,98 +1,92 @@
+from rest_framework import status, permissions, mixins
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from rest_framework import permissions, status
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
-from . import serializers
+from .serializers import LoginUserSerializer
 
-class LoginView(APIView):
-    permission_classes = [permissions.AllowAny]  
 
-    def post(self, request):
-        serializer = serializers.LoginUserSerializer(data=request.data)
+# Login View
+class LoginView(mixins.CreateModelMixin, GenericAPIView):
+    serializer_class = LoginUserSerializer
+    permission_classes = [permissions.AllowAny]
 
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        print(serializer.is_valid())
+        serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data['user']
-
         refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
 
-        response = Response({"detail": "Login realizado com sucesso."}, status=status.HTTP_200_OK)
-
-        response.set_cookie(
-            key='access_token',
-            value=access_token,
-            secure=True,
-            httponly=True,
-            samesite='None',
-            max_age=15 * 60  
-        )
-        response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            secure=True,
-            httponly=True,
-            samesite='None',
-            max_age=30 * 24 * 60 * 60  
-        )
-
-        return response
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "detail": "Login realizado com sucesso."
+        }, status=status.HTTP_200_OK)
 
 
-class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+# Refresh Token View
+class RefreshView(GenericAPIView):
+    permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
-        response = Response({"detail": "Logout realizado com sucesso."}, status=status.HTTP_200_OK)
-
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
-
-        return response
-
-
-class RefreshView(APIView):
-    def post(self, request):
-        refresh_token = request.COOKIES.get('refresh_token')
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.data.get("refresh")
 
         if not refresh_token:
-            return Response({"detail": "Token de atualização não encontrado."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"detail": "Token de atualização não fornecido."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
 
-            response = Response({"detail": "Token atualizado com sucesso."}, status=status.HTTP_200_OK)
-            response.set_cookie(
-                key='access_token',
-                value=access_token,
-                httponly=True,
-                secure=True,
-                samesite='None',
-                max_age=15 * 60
-            )
+            return Response({
+                "access": access_token,
+                "detail": "Token atualizado com sucesso."
+            }, status=status.HTTP_200_OK)
 
-            return response
+        except TokenError as e:
+            return Response({"detail": f"Token inválido: {str(e)}"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        except Exception as e:
-            response = Response({"detail": "Erro ao atualizar o token."}, status=status.HTTP_401_UNAUTHORIZED)
-            response.delete_cookie("access_token")
-            response.delete_cookie("refresh_token")
-            return response
+class LogoutView(mixins.DestroyModelMixin, GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
 
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
-class VerifyView(APIView):
-    def get(self, request):
-        access_token = request.COOKIES.get('access_token')
+    def destroy(self, request, *args, **kwargs):
+        refresh_token = request.data.get("refresh")
 
-        if not access_token:
-            return Response({"detail": "Token de acesso não encontrado."}, status=status.HTTP_401_UNAUTHORIZED)
+        if not refresh_token:
+            return Response({"detail": "Token de atualização não fornecido."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            AccessToken(access_token)
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError:
+            pass
+
+        return Response({"detail": "Logout realizado com sucesso."}, status=status.HTTP_200_OK)
+
+
+# Token Verify View
+class VerifyView(mixins.RetrieveModelMixin, GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return Response({"detail": "Cabeçalho de autenticação inválido."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = auth_header.split(" ")[1]
+
+        try:
+            AccessToken(token)
             return Response({"detail": "Token válido."}, status=status.HTTP_200_OK)
-        except AuthenticationFailed as e:
+        except InvalidToken as e:
             return Response({"detail": f"Token inválido: {str(e)}"}, status=status.HTTP_401_UNAUTHORIZED)
