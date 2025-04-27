@@ -267,6 +267,45 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED),
         self.assertEqual(response.json().get('detail'), 'As credenciais de autenticação não foram fornecidas.')
 
+    def test_patch_diary_update(self):
+        url = reverse('mental_health:diary_update', args=[self.diary.date])
+
+        payload = {
+            'content': "Sinto que estou sendo testado",
+        }
+
+        response = self.client.patch(url, payload = payload)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK),
+        self.assertEqual(response.json().get('detail'), 'Diario atualizado com sucesso.')
+
+    def test_patch_diary_update_fail_for_404(self):
+        date = timezone.datetime(2000, 1, 1)
+        url = reverse('mental_health:diary_update', args=[date.date()])
+
+        payload = {
+            'content': "",
+        }
+
+        response = self.client.patch(url, payload = payload)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
+        self.assertEqual(response.json().get('detail'), 'Diário não encontrado.')
+
+    def test_patch_diary_update_fail_for_unauthorized(self):
+        url = reverse('mental_health:diary_update', args=[self.diary.date])
+
+        self.client.logout()
+
+        payload = {
+            'content': "Sinto que estou sendo testado",
+        }
+
+        response = self.client.patch(url, payload = payload)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED),
+        self.assertEqual(response.json().get('detail'), 'As credenciais de autenticação não foram fornecidas.')
+
     def test_post_diary_create(self):
         url = reverse('mental_health:diary_create')
 
@@ -323,7 +362,7 @@ class MentalHealthTests(APITestCase, UserMixin):
         response = self.client.post(url, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json().get('non_field_errors')[0], "Um novo diario só pode ser feito após 24 horas.")
+        self.assertEqual(response.json().get('non_field_errors')[0], "Um novo diário só pode ser feito após 24 horas.")
 
     def test_get_mindfulness(self):
         url = reverse('mental_health:mindfulness_list')

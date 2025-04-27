@@ -3,8 +3,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from apps.user.models import User, Goal
 
-CHOICES = [('Ruim', 'Ruim'), ('Medio', 'Medio'), ('Bom', 'Bom')]
-
 class HydrationLog(models.Model):
     class Meta:
         verbose_name = 'Hydration'
@@ -19,13 +17,19 @@ class HydrationLog(models.Model):
         return f"Monitoramento de hidratação de {self.user.username} em {self.date}"
 
 class Exercise(models.Model):
+    class TypeChoices(models.TextChoices):
+        FORCA = 'Força', 'Força'
+        FLEXIBILIDADE = 'Flexibilidade', 'Flexibilidade'
+        AEROBICO = 'Aeróbico', 'Aeróbico'
+        RESISTENCIA = 'Resistência', 'Resistência'
+
     class Meta:
         verbose_name = 'Exercise'
         verbose_name_plural = "Exercises"
 
     name = models.CharField(max_length=255)
     duration = models.IntegerField()
-    type = models.CharField(max_length=100)
+    type = models.CharField(max_length=100, choices=TypeChoices.choices)
     description = models.TextField()
     difficulty = models.CharField(max_length=50)
 
