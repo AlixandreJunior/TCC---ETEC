@@ -73,17 +73,18 @@ class MindfulnessLogSerializer(serializers.ModelSerializer):
 
 class DiarySerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    content = serializers.CharField(required=True) 
 
     class Meta:
         model = Diary
         fields = ['id', 'user', 'title', 'content', 'date']
 
     def validate(self, data):
-        user = self.context['request'].user
-        today = timezone.localdate()
+        if self.instance is None:
+            user = self.context['request'].user
+            today = timezone.localdate()
 
-
-        if Diary.objects.filter(user=user, date = today).exists():
-            raise serializers.ValidationError("Um novo diario só pode ser feito após 24 horas.")
+            if Diary.objects.filter(user=user, date=today).exists():
+                raise serializers.ValidationError("Um novo diário só pode ser feito após 24 horas.")
 
         return data

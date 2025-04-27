@@ -9,6 +9,7 @@ urlpatterns = [
 
     path('diary/', views.DiaryListView.as_view(), name='diary_list'),
     path('diary/detail/<str:date>/', views.DiaryObjectView.as_view(), name = 'diary_object'),
+    path('diary/detail/<str:date>/update/', views.DiaryUpdateView.as_view(), name = 'diary_update'),
     path('diary/create/', views.DiaryCreateView.as_view(), name = 'diary_create'),
 
     path('mindfulness/', views.MindfulnessListView.as_view(), name='mindfulness_list'),

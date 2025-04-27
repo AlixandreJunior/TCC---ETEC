@@ -4,13 +4,19 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.user.models import User
 
 class Mindfulness(models.Model):
+    class TypeChoices(models.TextChoices):
+        ATENCAO_PLENA_RESPIRACAO = 'Foco na Respiração', 'Foco na Respiração'
+        BODY_SCAN = 'Escaneamento Corporal', 'Escaneamento Corporal'
+        MINDFULNESS_MOVIMENTO = 'Em Movimento', 'Em Movimento'
+        PENSAMENTOS_EMOCOES = 'Pensamentos e Emoções', 'Pensamentos e Emoções'
+
     class Meta:
         verbose_name = 'Mindfulness'
         verbose_name_plural = "Mindfulness"
 
     name = models.CharField(max_length=255)
     duration = models.IntegerField()
-    type = models.CharField(max_length=100)
+    type = models.CharField(max_length=100, choices=TypeChoices.choices)
     description = models.TextField()
     difficulty = models.CharField(max_length=50, blank=True, null=True)
 

@@ -1,5 +1,5 @@
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
@@ -63,6 +63,27 @@ class DiaryObjectView(GenericAPIView, RetrieveModelMixin):
     
     def get(self, request,*args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+    
+class DiaryUpdateView(GenericAPIView, UpdateModelMixin):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.DiarySerializer
+
+    def get_object(self):
+        date = self.kwargs.get('date')
+        try:
+            return models.Diary.objects.get(user=self.request.user, date=date)
+        except models.Diary.DoesNotExist:
+            raise NotFound("Diário não encontrado.")
+        
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response({'detail': "Diario atualizado com sucesso."}, status=status.HTTP_200_OK)
+    
+    def patch(self, request,*args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 class DiaryCreateView(GenericAPIView, CreateModelMixin):
     permission_classes = [IsAuthenticated]
