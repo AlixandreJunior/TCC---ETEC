@@ -10,15 +10,20 @@ class Mindfulness(models.Model):
         MINDFULNESS_MOVIMENTO = 'Em Movimento', 'Em Movimento'
         PENSAMENTOS_EMOCOES = 'Pensamentos e Emoções', 'Pensamentos e Emoções'
 
+    class DifficultyChoices(models.TextChoices):
+        DIFICIL = 'Díficil', 'Díficil'
+        INTERMEDIARIO = 'Intermediário', 'Intermediário'
+        FACIL = 'Fácil', 'Fácil'
+
     class Meta:
         verbose_name = 'Mindfulness'
         verbose_name_plural = "Mindfulness"
 
     name = models.CharField(max_length=255)
-    duration = models.IntegerField()
+    duration = models.PositiveIntegerField()
     type = models.CharField(max_length=100, choices=TypeChoices.choices)
     description = models.TextField()
-    difficulty = models.CharField(max_length=50, blank=True, null=True)
+    difficulty = models.CharField(max_length=50, choices = DifficultyChoices.choices)
 
     def __str__(self):
         return f"Mindfulness {self.name}"
@@ -55,7 +60,6 @@ class MindfulnessLog(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     mindfulness = models.ForeignKey(Mindfulness, on_delete=models.CASCADE)
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

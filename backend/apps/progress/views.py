@@ -1,6 +1,7 @@
 from rest_framework.mixins import ( RetrieveModelMixin, CreateModelMixin, ListModelMixin)
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
@@ -20,10 +21,17 @@ class ProgressView(GenericAPIView, RetrieveModelMixin):
 class ObjectiveListView(GenericAPIView, ListModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.ObjectiveSerializer
-    lookup_field = "user"
-
+    
     def get_queryset(self):
-        return models.Objective.objects.filter(user = self.request.user)
+        queryset = models.Objective.objects.filter(user = self.request.user)
+        status = self.request.GET.get('status')
+
+        if status:
+            queryset = queryset.filter(status = status)
+
+        if not queryset.exists():
+            raise NotFound("Objetivos não encontrados.")
+        return queryset
 
     def get(self, request, *args, **kwargs):
         return self.list(request,*args, **kwargs)
@@ -47,8 +55,18 @@ class ObjectiveCreateView(GenericAPIView, CreateModelMixin):
 class AchievementsView(GenericAPIView, ListModelMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.AchievementSerializer
-    queryset = models.Achievement.objects.all()
 
+    def get_queryset(self):
+        queryset = models.Achievement.objects.all()
+        category = self.request.GET.get('category')
+
+        if category:
+            queryset = queryset.filter(category = category)
+
+        if not queryset.exists():
+            raise NotFound("Conquistas não encontradas.")
+        return queryset
+    
     def get(self, request, *args, **kwargs):
         return self.list(request,*args, **kwargs)
 
@@ -58,7 +76,15 @@ class AchievementsUserView(GenericAPIView, ListModelMixin):
     lookup_field = "user"
 
     def get_queryset(self):
-        return models.Objective.objects.filter(user = self.request.user)
+        queryset = models.Objective.objects.filter(user = self.request.user)
+        category = self.request.GET.get('category')
+
+        if category:
+            queryset = queryset.filter(category = category)
+
+        if not queryset.exists():
+            raise NotFound("Conquistas não encontradas.")
+        return queryset
 
     def get(self, request, *args, **kwargs):
         return self.list(request,*args, **kwargs)

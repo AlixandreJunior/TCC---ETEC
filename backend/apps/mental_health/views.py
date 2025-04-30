@@ -42,7 +42,11 @@ class DiaryListView(GenericAPIView, ListModelMixin):
     serializer_class = serializers.DiarySerializer
 
     def get_queryset(self):
-        queryset = models.Diary.objects.filter(user = self.request.user)
+        search = self.request.GET.get('search')
+        queryset = models.Diary.objects.filter(user=self.request.user)
+        if search:
+            queryset = queryset.filter(title__icontains=search)
+            
         if not queryset.exists():
             raise NotFound("Diarios não encontrados.")
         return queryset
@@ -108,6 +112,15 @@ class MindfulnessListView(GenericAPIView, ListModelMixin):
 
     def get_queryset(self):
         queryset = models.Mindfulness.objects.all()
+
+        type = self.request.GET.get('type')
+        difficulty = self.request.GET.get('difficulty')
+
+        if type:
+            queryset = queryset.filter(type = type)
+        if difficulty:
+            queryset = queryset.filter(difficulty = difficulty)
+
         if not queryset.exists():
             raise NotFound("Exercícios de Mindfulness não encontrados.")
         return queryset
@@ -121,6 +134,14 @@ class MindfulnessLogListView(GenericAPIView, ListModelMixin):
 
     def get_queryset(self):
         queryset = models.MindfulnessLog.objects.filter(user = self.request.user)
+        type = self.request.GET.get('type')
+        difficulty = self.request.GET.get('difficulty')
+
+        if type:
+            queryset = queryset.filter(mindfulness__type = type)
+        if difficulty:
+            queryset = queryset.filter(mindfulness__difficulty = difficulty)
+            
         if not queryset.exists():
             raise NotFound("Registros de Mindfulness não encontrados.")
         return queryset

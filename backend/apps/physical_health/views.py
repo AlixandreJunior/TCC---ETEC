@@ -102,6 +102,15 @@ class ExerciseListView(GenericAPIView, ListModelMixin):
 
     def get_queryset(self):
         queryset = models.Exercise.objects.all()
+
+        type = self.request.GET.get('type')
+        category = self.request.GET.get('category')
+
+        if type:
+            queryset = queryset.filter(type = type)
+        if category:
+            queryset = queryset.filter(category = category)
+
         if not queryset.exists():
             raise NotFound("Exercicios não encontrados.")
         return queryset
@@ -115,6 +124,17 @@ class ExerciseLogView(GenericAPIView, ListModelMixin):
     
     def get_queryset(self):
         queryset = models.ExerciseLog.objects.filter(user = self.request.user)
+        name = self.request.GET.get('name')
+        type = self.request.GET.get('type')
+        difficulty = self.request.GET.get('difficulty')
+
+        if type:
+            queryset = queryset.filter(exercise__type = type)
+        if difficulty:
+            queryset = queryset.filter(exercise__difficulty = difficulty)
+        if name:
+            queryset = queryset.filter(exercise__name = name)
+
         if not queryset.exists():
             raise NotFound("Registros de Exercicios não encontrados.")
         return queryset

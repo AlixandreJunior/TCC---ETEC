@@ -22,16 +22,21 @@ class Exercise(models.Model):
         FLEXIBILIDADE = 'Flexibilidade', 'Flexibilidade'
         AEROBICO = 'Aeróbico', 'Aeróbico'
         RESISTENCIA = 'Resistência', 'Resistência'
+    
+    class DifficultyChoices(models.TextChoices):
+        DIFICIL = 'Díficil', 'Díficil'
+        INTERMEDIARIO = 'Intermediário', 'Intermediário'
+        FACIL = 'Fácil', 'Fácil'
 
     class Meta:
         verbose_name = 'Exercise'
         verbose_name_plural = "Exercises"
 
     name = models.CharField(max_length=255)
-    duration = models.IntegerField()
+    duration = models.PositiveIntegerField()
     type = models.CharField(max_length=100, choices=TypeChoices.choices)
     description = models.TextField()
-    difficulty = models.CharField(max_length=50)
+    difficulty = models.CharField(max_length=50, choices = DifficultyChoices.choices)
 
     def __str__(self):
         return f"Exercicio {self.name}"
@@ -82,7 +87,6 @@ class ExerciseLog(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
