@@ -76,11 +76,11 @@ class AchievementsUserView(GenericAPIView, ListModelMixin):
     lookup_field = "user"
 
     def get_queryset(self):
-        queryset = models.Objective.objects.filter(user = self.request.user)
+        queryset = models.AchievementLog.objects.filter(user = self.request.user)
         category = self.request.GET.get('category')
 
         if category:
-            queryset = queryset.filter(category = category)
+            queryset = queryset.filter(achievement__category = category)
 
         if not queryset.exists():
             raise NotFound("Conquistas não encontradas.")

@@ -3,7 +3,7 @@ from rest_framework import status
 from django.urls import reverse
 from django.utils import timezone
 from utils.usermixin import UserMixin
-from apps.mental_health import models
+from apps.mental_health import models, serializers
 
 class MentalHealthTests(APITestCase, UserMixin):
     def setUp(self):
@@ -30,15 +30,27 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.mindfulness = models.Mindfulness.objects.create(
             name="Respiração Consciente",
             duration=10,
-            type="Meditação Guiada",
+            type="Foco na Respiração",
             description="Uma prática simples de atenção plena focada na respiração.",
             difficulty="Fácil"
+        )
+
+        self.mindfulness2 = models.Mindfulness.objects.create(
+            name="Body Scan",
+            duration=10,
+            type="Escaneamento Corporal",
+            description="Uma prática simples de atenção plena focada na respiração.",
+            difficulty="Intermediário"
         )
 
         self.mindfulness_log = models.MindfulnessLog.objects.create(
             user = self.user,
             mindfulness = self.mindfulness,
-            created_at = timezone.datetime.now().date()
+        )
+
+        self.mindfulness_log2 = models.MindfulnessLog.objects.create(
+            user = self.user,
+            mindfulness = self.mindfulness2,
         )
 
     def test_get_mentalcheckin(self):
@@ -246,7 +258,8 @@ class MentalHealthTests(APITestCase, UserMixin):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK),
-        self.assertEqual(response.json().get('id'), 1)
+        expected_data = serializers.DiarySerializer(self.diary).data
+        self.assertEqual(expected_data , response.json())
 
     def test_get_diary_object_fail_for_404(self):
         date = timezone.datetime(2000, 1, 1)  # Torne ciente de fuso horário
@@ -372,10 +385,45 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.assertEqual(response.status_code, status.HTTP_200_OK),
         self.assertEqual(response.json()[0].get('id'), 1)
 
+    def test_get_mindfulness_with_filter_for_type(self):
+        url = reverse('mental_health:mindfulness_list')
+
+        response = self.client.get(url, {'type': 'Escaneamento Corporal'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK),
+        expected_data = serializers.MindfulnessSerializer(self.mindfulness2).data
+        self.assertIn(expected_data, response.json())
+
+    def test_get_mindfulness_with_filter_for_type_fail_for_404(self):
+        url = reverse('mental_health:mindfulness_list')
+
+        response = self.client.get(url, {'type': 'ERROR'})
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
+        self.assertIn('Exercícios de Mindfulness não encontrados.', response.json().get('detail'))
+
+    def test_get_mindfulness_with_filter_for_difficulty(self):
+        url = reverse('mental_health:mindfulness_list')
+
+        response = self.client.get(url, {'difficulty': 'Intermediário'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK),
+        expected_data = serializers.MindfulnessSerializer(self.mindfulness2).data
+        self.assertIn(expected_data, response.json())
+
+    def test_get_mindfulness_with_filter_for_difficulty_fail_for_404(self):
+        url = reverse('mental_health:mindfulness_list')
+
+        response = self.client.get(url, {'difficulty': 'ERROR'})
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
+        self.assertIn('Exercícios de Mindfulness não encontrados.', response.json().get('detail'))
+
     def test_get_mindfulness_fail_for_404(self):
         url = reverse('mental_health:mindfulness_list')
 
         self.mindfulness.delete()
+        self.mindfulness2.delete()
 
         response = self.client.get(url)
 
@@ -400,10 +448,46 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.assertEqual(response.status_code, status.HTTP_200_OK),
         self.assertEqual(response.json()[0].get('id'), 1)
 
+    def test_get_mindfulness_log_with_filter_for_type(self):
+        url = reverse('mental_health:mindfulness_log_list')
+
+        response = self.client.get(url, {'type': 'Escaneamento Corporal'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK),
+        expected_data = serializers.MindfulnessLogSerializer(self.mindfulness_log2).data
+        self.assertIn(expected_data, response.json())
+
+    def test_get_mindfulness_log_with_filter_for_type_fail_for_404(self):
+        url = reverse('mental_health:mindfulness_log_list')
+
+        response = self.client.get(url, {'type': 'ERROR'})
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
+        self.assertIn('Registros de Mindfulness não encontrados.', response.json().get('detail'))
+
+    def test_get_mindfulness_log_with_filter_for_difficulty(self):
+        url = reverse('mental_health:mindfulness_log_list')
+
+        response = self.client.get(url, {'difficulty': 'Intermediário'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK),
+        expected_data = serializers.MindfulnessLogSerializer(self.mindfulness_log2).data
+        self.assertIn(expected_data, response.json())
+
+    def test_get_mindfulness_log_with_filter_for_difficulty_fail_for_404(self):
+        url = reverse('mental_health:mindfulness_log_list')
+
+        response = self.client.get(url, {'difficulty': 'ERROR'})
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
+        self.assertIn('Registros de Mindfulness não encontrados.', response.json().get('detail'))
+
+
     def test_get_mindfulness_log_fail_for_404(self):
         url = reverse('mental_health:mindfulness_log_list')
 
         self.mindfulness.delete()
+        self.mindfulness2.delete()
 
         response = self.client.get(url)
 
@@ -427,7 +511,6 @@ class MentalHealthTests(APITestCase, UserMixin):
 
         payload = {
             'mindfulness': self.mindfulness.pk,
-            'rating': 4
         }
 
         response = self.client.post(url, payload)
@@ -441,7 +524,7 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.mindfulness_log.delete()
 
         payload = {
-            'rating': 4
+
         }
 
         response = self.client.post(url, payload)
@@ -456,7 +539,6 @@ class MentalHealthTests(APITestCase, UserMixin):
 
         payload = {
             'mindfulness': self.mindfulness.pk,
-            'rating': 4
         }
 
         response = self.client.post(url, payload)

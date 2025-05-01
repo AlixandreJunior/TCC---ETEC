@@ -141,7 +141,7 @@ class MindfulnessLogListView(GenericAPIView, ListModelMixin):
             queryset = queryset.filter(mindfulness__type = type)
         if difficulty:
             queryset = queryset.filter(mindfulness__difficulty = difficulty)
-            
+
         if not queryset.exists():
             raise NotFound("Registros de Mindfulness não encontrados.")
         return queryset

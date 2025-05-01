@@ -82,4 +82,4 @@ class ExerciseLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExerciseLog
-        fields = ['id', 'user', 'exercise', 'rating', 'created_at']
+        fields = ['id', 'user', 'exercise', 'created_at']
