@@ -29,7 +29,7 @@ class ObjectiveListView(GenericAPIView, ListModelMixin):
         if status:
             queryset = queryset.filter(status = status)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Objetivos não encontrados.")
         return queryset
 
@@ -63,7 +63,7 @@ class AchievementsView(GenericAPIView, ListModelMixin):
         if category:
             queryset = queryset.filter(category = category)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Conquistas não encontradas.")
         return queryset
     
@@ -82,7 +82,7 @@ class AchievementsUserView(GenericAPIView, ListModelMixin):
         if category:
             queryset = queryset.filter(achievement__category = category)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Conquistas não encontradas.")
         return queryset
 

@@ -13,7 +13,7 @@ class CheckInListView(GenericAPIView, ListModelMixin):
     
     def get_queryset(self):
         queryset = models.PhysicalCheckin.objects.filter(user = self.request.user)
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Registros de Check-In não encontrados.")
         return queryset
     
@@ -43,7 +43,7 @@ class StepsLogListView(GenericAPIView, ListModelMixin):
     
     def get_queryset(self):
         queryset = models.StepsLog.objects.filter(user = self.request.user)
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Registros de Passos não encontrados.")
         return queryset
     
@@ -72,7 +72,7 @@ class HydratationLogListView(GenericAPIView, ListModelMixin):
     serializer_class = serializers.HydrationLogSerializer
     def get_queryset(self):
         queryset = models.HydrationLog.objects.filter(user = self.request.user)
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Registros de Hidratação não encontrados.")
         return queryset
     
@@ -111,7 +111,7 @@ class ExerciseListView(GenericAPIView, ListModelMixin):
         if difficulty:
             queryset = queryset.filter(difficulty = difficulty)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Exercícios não encontrados.")
         return queryset
     
@@ -132,7 +132,7 @@ class ExerciseLogView(GenericAPIView, ListModelMixin):
         if difficulty:
             queryset = queryset.filter(exercise__difficulty = difficulty)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Registros de Exercícios não encontrados.")
         return queryset
     

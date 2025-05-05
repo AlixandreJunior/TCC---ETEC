@@ -13,7 +13,7 @@ class CheckInListView(GenericAPIView, ListModelMixin):
     
     def get_queryset(self):
         queryset = models.MentalCheckin.objects.filter(user = self.request.user)
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Registros de Check-In não encontrados.")
         return queryset
     
@@ -47,7 +47,7 @@ class DiaryListView(GenericAPIView, ListModelMixin):
         if search:
             queryset = queryset.filter(title__icontains=search)
             
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Diarios não encontrados.")
         return queryset
     
@@ -121,7 +121,7 @@ class MindfulnessListView(GenericAPIView, ListModelMixin):
         if difficulty:
             queryset = queryset.filter(difficulty = difficulty)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Exercícios de Mindfulness não encontrados.")
         return queryset
     
@@ -142,7 +142,7 @@ class MindfulnessLogListView(GenericAPIView, ListModelMixin):
         if difficulty:
             queryset = queryset.filter(mindfulness__difficulty = difficulty)
 
-        if not queryset.exists():
+        if not queryset:
             raise NotFound("Registros de Mindfulness não encontrados.")
         return queryset
     

@@ -8,6 +8,7 @@ db.sqlite3
 /static/
 *.sqlite3
 media/
+.env
 
 # PyCharm
 .idea/
