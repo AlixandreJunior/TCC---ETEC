@@ -27,6 +27,6 @@ class StepsAdmin(admin.ModelAdmin):
 
 @admin.register(ExerciseLog)
 class ExerciseLogAdmin(admin.ModelAdmin):
-    list_display = ("user", "exercise", "created_at", "rating")
-    list_filter = ("created_at", "rating")
+    list_display = ("user", "exercise", "created_at",)
+    list_filter = ("created_at",)
     search_fields = ("user__username", "exercise__name")

@@ -15,6 +15,6 @@ class MentalCheckinAdmin(admin.ModelAdmin):
 
 @admin.register(MindfulnessLog)
 class MindfulnessLogAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mindfulness', 'rating', 'created_at')
+    list_display = ('user', 'mindfulness', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('user__username', 'mindfulness__name')

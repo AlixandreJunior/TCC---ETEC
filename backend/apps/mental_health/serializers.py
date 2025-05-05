@@ -69,7 +69,7 @@ class MindfulnessLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MindfulnessLog
-        fields = ['id', 'user', 'mindfulness', 'rating', 'created_at']
+        fields = ['id', 'user', 'mindfulness', 'created_at']
 
 class DiarySerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
