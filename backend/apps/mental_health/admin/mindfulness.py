@@ -1,17 +1,11 @@
 from django.contrib import admin
-from .models import Mindfulness, MentalCheckin, MindfulnessLog
+from apps.mental_health.models.mindfulness import Mindfulness, MindfulnessLog
 
 @admin.register(Mindfulness)
 class MindfulnessAdmin(admin.ModelAdmin):
     list_display = ('name', 'duration', 'type', 'difficulty')
     search_fields = ('name', 'type', 'difficulty')
     list_filter = ('type', 'difficulty')
-
-@admin.register(MentalCheckin)
-class MentalCheckinAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'mood', 'stress_level', 'anxiety_level')
-    list_filter = ('mood', 'date')
-    search_fields = ('user__username',)
 
 @admin.register(MindfulnessLog)
 class MindfulnessLogAdmin(admin.ModelAdmin):
