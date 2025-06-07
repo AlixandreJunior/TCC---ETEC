@@ -1,6 +1,6 @@
 from django.db import models
 from django.dispatch import receiver
-from apps.user.models import User, Goal
+from apps.user.models.user import User, Goal
 
 class HydrationLog(models.Model):
     class Meta:
