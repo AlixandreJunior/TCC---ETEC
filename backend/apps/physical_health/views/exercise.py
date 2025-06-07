@@ -25,9 +25,6 @@ class ExerciseListView(ListAPIView):
         if not queryset:
             raise NotFound("Exercícios não encontrados.")
         return queryset
-    
-    def get(self, request,*args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
 class ExerciseLogView(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -47,9 +44,6 @@ class ExerciseLogView(ListAPIView):
             raise NotFound("Registros de Exercícios não encontrados.")
         return queryset
     
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
 class ExerciseLogRegisterView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ExerciseLogSerializer
@@ -63,6 +57,3 @@ class ExerciseLogRegisterView(CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response({'detail': "Registro de exercícios registrado com sucesso."}, status=status.HTTP_201_CREATED, headers=headers)
-    
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)

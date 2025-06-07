@@ -16,10 +16,7 @@ class StepsLogListView(ListAPIView):
         if not queryset:
             raise NotFound("Registros de Passos não encontrados.")
         return queryset
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
+
 class StepsLogRegisterView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = StepsLogSerializer
@@ -33,7 +30,3 @@ class StepsLogRegisterView(CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response({'detail': "Registro de passos registrado com sucesso."}, status=status.HTTP_201_CREATED, headers=headers)
-    
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-    
