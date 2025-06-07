@@ -6,15 +6,13 @@ from io import BytesIO
 from PIL import Image
 
 from utils.usermixin import UserMixin
-from apps.user import models
+from apps.user.models.user import User
 
 class UserTest(APITestCase,UserMixin ):
     def setUp(self):
         self.user = self.make_user_auth()
         self.user2 = self.make_user_not_auth()
         
-        self.goal = models.Goal.objects.get(user = self.user)
-
     def test_get_user_object(self):
         url = reverse('user:user')
 
@@ -82,7 +80,7 @@ class UserTest(APITestCase,UserMixin ):
         # Verifica se o usuário foi criado com sucesso e a foto foi salva
         self.assertEqual(response.status_code, 201)
 
-        user_profile = models.User.objects.get(username=valid_data.get("username"))
+        user_profile = User.objects.get(username=valid_data.get("username"))
 
         self.assertTrue(user_profile.avatar.name.startswith('avatar/test_avatar.jpg'))
 
@@ -205,51 +203,6 @@ class UserTest(APITestCase,UserMixin ):
         payload = {
             "username": "newuser",
             "gender": 'Outro'
-        }
-
-        response = self.client.patch(url, payload)
-
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.json().get('detail'), 'As credenciais de autenticação não foram fornecidas.')
-
-    def test_get_goals(self):
-        url = reverse('user:user_goals')
-
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_get_goals_fail_for_unauthorized(self):
-        url = reverse('user:user_goals')
-
-        self.client.logout()
-
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.json().get('detail'), 'As credenciais de autenticação não foram fornecidas.')
-
-    def test_get_goals_update(self):
-        url = reverse('user:user_goals_update')
-
-        payload = {
-            'steps_goal': 9000,
-            'hydration_goal': 2000,
-        }
-
-        response = self.client.patch(url, payload)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json().get('detail'), "Metas atualizadas com sucesso.",)
-
-    def test_get_goals_update_fail_for_unauthorized(self):
-        url = reverse('user:user_goals_update')
-
-        self.client.logout()
-
-        payload = {
-            'steps_goal': 9000,
-            'hydration_goal': 2000,
         }
 
         response = self.client.patch(url, payload)

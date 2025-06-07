@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, password_validation
-from apps.user.models import Goal  
 
 User = get_user_model()
 
@@ -48,17 +47,3 @@ class UserSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
-
-class GoalSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = Goal
-        fields = [
-            'id',
-            'user',
-            'hydration_goal',
-            'steps_goal',
-            'exercise_goal',
-            'mindfulness_goal',
-        ]
