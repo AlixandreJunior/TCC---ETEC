@@ -1,0 +1,237 @@
+import {StyleSheet} from "react-native"
+import { colors } from "@/styles/colors"
+import { spacing } from "@/styles/spacing"
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F7FA",
+    paddingBottom: spacing.xl,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: spacing.lg,
+    backgroundColor: colors.background.main,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    marginBottom: spacing.md,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  headerTitle: {
+    fontFamily: "Poppins-SemiBold",
+    fontSize: 20,
+    color: colors.text.primary,
+  },
+  healthSection: {
+    alignItems: "center",
+    padding: spacing.lg,
+    backgroundColor: colors.white,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.md,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  healthMetrics: {
+    width: "100%",
+    marginTop: spacing.lg,
+  },
+  metric: {
+    marginBottom: spacing.md,
+  },
+  metricLabel: {
+    fontFamily: "Poppins-Medium",
+    fontSize: 14,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  },
+  metricValue: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 12,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: colors.lightGray,
+    borderRadius: 4,
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  sectionCard: {
+    padding: spacing.lg,
+    backgroundColor: colors.white,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.md,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  sectionTitle: {
+    fontFamily: "Poppins-SemiBold",
+    fontSize: 18,
+    color: colors.text.primary,
+  },
+  sectionSubtitle: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 14,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
+  },
+  weekProgress: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: spacing.md,
+    marginVertical: spacing.lg,
+  },
+  dayIndicator: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+  },
+  actionButton: {
+    backgroundColor: colors.primary,
+    padding: spacing.md,
+    borderRadius: 100, // Botões mais arredondados
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  greenButton: {
+    backgroundColor: "#4CAF50",
+  },
+  blueButton: {
+    backgroundColor: colors.blue.main,
+  },
+  actionButtonText: {
+    fontFamily: "Poppins-Medium",
+    fontSize: 16,
+    color: colors.white,
+  },
+  goalItem: {
+    marginVertical: spacing.sm,
+  },
+  goalLabel: {
+    fontFamily: "Poppins-Medium",
+    fontSize: 14,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  },
+  goalProgress: {
+    height: 8,
+    backgroundColor: colors.lightGray,
+    borderRadius: 4,
+    marginVertical: spacing.xs,
+  },
+  goalProgressFill: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  goalValue: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 12,
+    color: colors.text.secondary,
+  },
+  objectivesHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: spacing.lg,
+  },
+  addButton: {
+    backgroundColor: colors.blue.main,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  objectivesList: {
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  objectiveItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    padding: spacing.sm,
+    backgroundColor: "#F9FAFC",
+    borderRadius: 12,
+    marginBottom: spacing.sm,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: colors.gray,
+  },
+  checkedBox: {
+    backgroundColor: "#4CAF50",
+    borderColor: "#4CAF50",
+  },
+  objectiveText: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 14,
+    color: colors.text.primary,
+    flex: 1,
+  },
+  completedObjective: {
+    opacity: 0.5,
+  },
+  completedText: {
+    textDecorationLine: "line-through",
+  },
+  tabBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.lightGray,
+    backgroundColor: colors.white,
+  },
+  tabItem: {
+    alignItems: "center",
+  },
+  tabLabel: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 12,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
+  },
+  activeTab: {
+    color: colors.primary,
+  },
+})

@@ -15,8 +15,6 @@ import {
 import { ArrowLeft } from "lucide-react-native"
 import { LinearGradient } from "expo-linear-gradient"
 
-const { width, height } = Dimensions.get("window")
-
 export default function DiaryModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")

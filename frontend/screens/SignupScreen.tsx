@@ -32,7 +32,7 @@ export function SignupScreen() {
   const handleCreateAccount = () => {
     if (isDemo) {
       // No modo demo, apenas navega para a tela inicial
-      router.push("/(tabs)")
+      router.push("./(tabs)/Home")
       return
     }
 
@@ -53,7 +53,7 @@ export function SignupScreen() {
     }
 
     // Simulação de cadastro bem-sucedido
-    Alert.alert("Sucesso", "Conta criada com sucesso!", [{ text: "OK", onPress: () => router.push("/(tabs)") }])
+    Alert.alert("Sucesso", "Conta criada com sucesso!", [{ text: "OK", onPress: () => router.push("/(tabs)/Home") }])
   }
 
   const handleLogin = () => {

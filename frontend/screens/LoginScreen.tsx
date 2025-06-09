@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import {
   View,
@@ -27,11 +25,10 @@ export function LoginScreen() {
   const handleLogin = () => {
     if (isDemo) {
       // No modo demo, apenas navega para a tela inicial
-      router.push("/(tabs)")
+      router.push("./(tabs)/Home/")
       return
     }
 
-    // Validação básica
     if (!email.trim()) {
       Alert.alert("Erro", "Por favor, digite seu email")
       return
@@ -42,9 +39,8 @@ export function LoginScreen() {
       return
     }
 
-    // Simulação de login bem-sucedido
     Alert.alert("Sucesso", "Login realizado com sucesso!", [
-      { text: "OK", onPress: () => router.push("/(tabs)") },
+      { text: "OK", onPress: () => router.push("./(tabs)") },
     ])
   }
 
@@ -127,7 +123,6 @@ export function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Botão de modo demo (pode ser removido em produção) */}
           <TouchableOpacity style={styles.demoButton} onPress={toggleDemo}>
             <Text style={styles.demoButtonText}>
               {isDemo ? "Desativar Modo Demo" : "Ativar Modo Demo"}
