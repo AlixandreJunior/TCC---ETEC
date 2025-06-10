@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
 
-from apps.mental_health.serializers.diary import DiarySerializer
+from apps.mental_health.serializers.diary import DiaryReadSerializer, DiaryWriteSerializer
 from apps.mental_health.models.diary import Diary
 
 class DiaryListView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = DiarySerializer
+    serializer_class = DiaryReadSerializer
 
     def get_queryset(self):
         search = self.request.GET.get('search')
@@ -23,7 +23,7 @@ class DiaryListView(ListAPIView):
     
 class DiaryObjectView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = DiarySerializer
+    serializer_class = DiaryReadSerializer
 
     def get_object(self):
         date = self.kwargs.get('date')
@@ -34,7 +34,7 @@ class DiaryObjectView(RetrieveAPIView):
     
 class DiaryUpdateView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = DiarySerializer
+    serializer_class = DiaryWriteSerializer
 
     def get_object(self):
         date = self.kwargs.get('date')
@@ -52,7 +52,7 @@ class DiaryUpdateView(UpdateAPIView):
 
 class DiaryCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = DiarySerializer
+    serializer_class = DiaryWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  

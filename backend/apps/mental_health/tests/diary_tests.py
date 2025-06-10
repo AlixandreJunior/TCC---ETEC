@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from apps.mental_health.models.diary import Diary
 from utils.usermixin import UserMixin
-from apps.mental_health.serializers.diary import DiarySerializer
+from apps.mental_health.serializers.diary import DiaryReadSerializer
 
 class DiaryTests(APITestCase, UserMixin):
     def setUp(self):
@@ -52,7 +52,7 @@ class DiaryTests(APITestCase, UserMixin):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = DiarySerializer(self.diary).data
+        expected_data = DiaryReadSerializer(self.diary).data
         self.assertEqual(expected_data , response.json())
 
     def test_get_diary_object_fail_for_404(self):

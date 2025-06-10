@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
 
-from apps.mental_health.serializers.mindfulness import MindfulnessSerializer, MindfulnessLogSerializer
+from apps.mental_health.serializers.mindfulness import MindfulnessSerializer, MindfulnessLogWriteSerializer, MindfulnessLogReadSerializer
 from apps.mental_health.models.mindfulness import Mindfulness, MindfulnessLog
 
 
@@ -29,7 +29,7 @@ class MindfulnessListView(ListAPIView):
 
 class MindfulnessLogListView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = MindfulnessLogSerializer
+    serializer_class = MindfulnessLogReadSerializer
 
     def get_queryset(self):
         queryset = MindfulnessLog.objects.filter(user = self.request.user)
@@ -47,7 +47,7 @@ class MindfulnessLogListView(ListAPIView):
 
 class MindfulnessLogRegisterView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = MindfulnessLogSerializer
+    serializer_class = MindfulnessLogWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  

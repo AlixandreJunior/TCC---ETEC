@@ -1,22 +1,43 @@
-from django.utils import timezone
 from rest_framework import serializers
-from apps.mental_health.models.diary import Diary
-from utils.generate_recomendation import mental_generate_recommendation
+from apps.mental_health.models.diary import Diary, Activity
 
-class DiarySerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    content = serializers.CharField(required=True) 
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = ['id', 'name']
+
+class DiaryReadSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    activities = ActivitySerializer(many=True)
 
     class Meta:
         model = Diary
-        fields = ['id', 'user', 'title', 'content', 'date']
+        fields = [
+            'id',
+            'user',
+            'title',
+            'content',
+            'datetime',
+            'mood',
+            'activities',
+            'photo',
+        ]
 
-    def validate(self, data):
-        if self.instance is None:
-            user = self.context['request'].user
-            today = timezone.localdate()
+class DiaryWriteSerializer(serializers.ModelSerializer):
+    activity = serializers.PrimaryKeyRelatedField(
+        queryset=Activity.objects.all(),
+        many=True,
+        write_only=True,
+        source='activities'
+    )
 
-            if Diary.objects.filter(user=user, date=today).exists():
-                raise serializers.ValidationError("Um novo diário só pode ser feito após 24 horas.")
-
-        return data
+    class Meta:
+        model = Diary
+        fields = [
+            'title',
+            'content',
+            'datetime',
+            'mood',
+            'activity_ids',
+            'photo',
+        ]

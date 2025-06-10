@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from apps.mental_health.models.mindfulness import Mindfulness, MindfulnessLog
-from apps.mental_health.serializers.mindfulness import MindfulnessSerializer, MindfulnessLogSerializer
+from apps.mental_health.serializers.mindfulness import MindfulnessSerializer, MindfulnessLogReadSerializer
 from utils.usermixin import UserMixin
 
 class MentalHealthTests(APITestCase, UserMixin):
@@ -11,28 +11,26 @@ class MentalHealthTests(APITestCase, UserMixin):
 
         self.mindfulness = Mindfulness.objects.create(
             name="Respiração Consciente",
-            duration=10,
             type="Foco na Respiração",
-            description="Uma prática simples de atenção plena focada na respiração.",
-            difficulty="Fácil"
         )
 
         self.mindfulness2 = Mindfulness.objects.create(
             name="Body Scan",
-            duration=10,
             type="Escaneamento Corporal",
-            description="Uma prática simples de atenção plena focada na respiração.",
-            difficulty="Intermediário"
         )
 
         self.mindfulness_log = MindfulnessLog.objects.create(
             user = self.user,
             mindfulness = self.mindfulness,
+            duration = 10,
+            description = "Registro 1"
         )
 
         self.mindfulness_log2 = MindfulnessLog.objects.create(
             user = self.user,
             mindfulness = self.mindfulness2,
+            duration = 10,
+            description = "Registro 2"
         )
 
     
@@ -113,7 +111,7 @@ class MentalHealthTests(APITestCase, UserMixin):
         response = self.client.get(url, {'type': 'Escaneamento Corporal'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = MindfulnessLogSerializer(self.mindfulness_log2).data
+        expected_data = MindfulnessLogReadSerializer(self.mindfulness_log2).data
         self.assertIn(expected_data, response.json())
 
     def test_get_mindfulness_log_with_filter_for_type_fail_for_404(self):
@@ -130,7 +128,7 @@ class MentalHealthTests(APITestCase, UserMixin):
         response = self.client.get(url, {'difficulty': 'Intermediário'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = MindfulnessLogSerializer(self.mindfulness_log2).data
+        expected_data = MindfulnessLogReadSerializer(self.mindfulness_log2).data
         self.assertIn(expected_data, response.json())
 
     def test_get_mindfulness_log_with_filter_for_difficulty_fail_for_404(self):

@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'password',
-            'avatar',
             'birth_date',
             'gender',
             'created_at',
@@ -24,15 +23,15 @@ class UserSerializer(serializers.ModelSerializer):
     
     def validate_password(self, value):
         try:
-            password_validation.validate_password(value)  # Valida a senha usando as regras do Django
+            password_validation.validate_password(value)
         except serializers.ValidationError as e:
-            raise serializers.ValidationError({"password": str(e)})  # Retorna o erro de validação
+            raise serializers.ValidationError({"password": str(e)})  
         return value
     
     def create(self, validated_data):
         password = validated_data.pop('password')
 
-        user = User.objects.create(**validated_data)  # Cria o usuário
+        user = User.objects.create(**validated_data)  
         user.set_password(password)
         user.save()
 

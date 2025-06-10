@@ -3,6 +3,6 @@ from backend.apps.physical_health.models.hydratation import HydrationLog
 
 @admin.register(HydrationLog)
 class HydrationAdmin(admin.ModelAdmin):
-    list_display = ("user", "quantity", "goal_achieved", "date")
-    list_filter = ("goal_achieved", "date")
+    list_display = ("user", "quantity", "date")
+    list_filter = ("date")
     search_fields = ("user__username",)
