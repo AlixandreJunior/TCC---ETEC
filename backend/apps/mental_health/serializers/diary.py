@@ -1,22 +1,56 @@
-from django.utils import timezone
 from rest_framework import serializers
-from apps.mental_health.models.diary import Diary
-from utils.generate_recomendation import mental_generate_recommendation
+from apps.mental_health.models.diary import Diary, Activity
 
-class DiarySerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    content = serializers.CharField(required=True) 
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = ['id', 'name']
+
+class DiaryReadSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    activities = ActivitySerializer(many=True)
 
     class Meta:
         model = Diary
-        fields = ['id', 'user', 'title', 'content', 'date']
+        fields = [
+            'id',
+            'user',
+            'title',
+            'content',
+            'datetime',
+            'mood',
+            'activities',
+            'photo',
+        ]
+
+class DiaryWriteSerializer(serializers.ModelSerializer):
+    activity = serializers.PrimaryKeyRelatedField(
+        queryset=Activity.objects.all(),
+        many=True,
+        write_only=True,
+        source='activities',
+    )
+
+    class Meta:
+        model = Diary
+        fields = [
+            'title',
+            'content',
+            'datetime',
+            'mood',
+            'activity',
+            'photo',
+        ]
 
     def validate(self, data):
-        if self.instance is None:
-            user = self.context['request'].user
-            today = timezone.localdate()
+        request = self.context.get('request')
+        user = request.user if request else None
+        title = data.get('title')
 
-            if Diary.objects.filter(user=user, date=today).exists():
-                raise serializers.ValidationError("Um novo diário só pode ser feito após 24 horas.")
+        if self.instance is None and user and title:
+            if Diary.objects.filter(user=user, title=title).exists():
+                raise serializers.ValidationError({
+                    'title': 'Você já criou um diário com esse título.'
+                })
 
         return data

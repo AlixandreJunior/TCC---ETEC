@@ -10,7 +10,6 @@ class UserMixin:
         email='username@email.com',
         gender = "Masculino",
         birth_date = '2000-04-20',
-        avatar=None,
     ): 
         
         user = models.User.objects.create(
@@ -21,7 +20,6 @@ class UserMixin:
             password = password,
             gender = gender,
             birth_date = birth_date,
-            avatar = avatar,
             is_active = True
         )
 
@@ -41,7 +39,6 @@ class UserMixin:
         email='username2@email.com',
         gender = "Feminino",
         birth_date = '2001-05-21',
-        avatar=None,
     ): 
         
         user = models.User.objects.create(
@@ -52,7 +49,6 @@ class UserMixin:
             password = password,
             gender = gender,
             birth_date = birth_date,
-            avatar = avatar,
             is_active = True
         )
 
@@ -70,7 +66,6 @@ class UserMixin:
         email='username3@email.com',
         gender = "Masculino",
         birth_date = '2002-06-22',
-        avatar=None,
     ): 
         
         user = models.User.objects.create(
@@ -81,7 +76,6 @@ class UserMixin:
             password = password,
             gender = gender,
             birth_date = birth_date,
-            avatar = avatar,
             is_active = False
         )
 

@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
-        (_('Informações Pessoais'), {'fields': ('birth_date', 'gender', 'avatar')}),
+        (_('Informações Pessoais'), {'fields': ('birth_date', 'gender')}),
         (_('Permissões'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Preferências'), {'fields': ('notifications',)}),
         (_('Datas Importantes'), {'fields': ('last_login', 'date_joined', 'created_at')}),
@@ -21,7 +21,7 @@ class UserAdmin(admin.ModelAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'birth_date', 'gender', 'avatar', 'notifications', 'is_active', 'is_staff', 'is_superuser'),
+            'fields': ('username', 'email', 'password1', 'password2', 'birth_date', 'gender', 'notifications', 'is_active', 'is_staff', 'is_superuser'),
         }),
     )
 

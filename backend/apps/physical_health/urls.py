@@ -1,12 +1,9 @@
 from django.urls import path
-from apps.physical_health.views import checkin, exercise, steps, hydratation
+from apps.physical_health.views import exercise, steps, hydratation
 
 app_name = 'physical_health'
 
 urlpatterns = [
-    path('check-in/', checkin.CheckInListView.as_view(), name='checkin_list'),
-    path('check-in/create/', checkin.CheckInCreateView.as_view(), name = 'checkin_create'),
-
     path('steps/', steps.StepsLogListView.as_view(), name='steps_list'),
     path('steps/register/', steps.StepsLogRegisterView.as_view(), name= 'steps_register'),
 

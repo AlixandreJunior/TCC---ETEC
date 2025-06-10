@@ -11,7 +11,6 @@ class StepsTests(APITestCase, UserMixin):
         self.steps_log = StepsLog.objects.create(
             user=self.user,
             steps=8500,
-            goal_achieved=True,
         )
 
     def test_get_steps(self):
@@ -59,7 +58,6 @@ class StepsTests(APITestCase, UserMixin):
 
         payload = {
             'steps': 1000,
-            'goal_achieved': False
         }
 
         response = self.client.post(url, payload)
@@ -73,7 +71,6 @@ class StepsTests(APITestCase, UserMixin):
         self.steps_log.delete()
 
         payload = {
-            'goal_achieved': False
         }
 
         response = self.client.post(url, payload)
@@ -88,7 +85,6 @@ class StepsTests(APITestCase, UserMixin):
 
         payload = {
             'steps': 1000,
-            'goal_achieved': False
         }
 
         response = self.client.post(url, payload)

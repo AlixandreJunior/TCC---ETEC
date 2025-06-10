@@ -6,4 +6,4 @@ class StepsLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StepsLog
-        fields = ['id', 'user', 'steps', 'goal_achieved', 'date']
+        fields = ['id', 'user', 'steps', 'date']
