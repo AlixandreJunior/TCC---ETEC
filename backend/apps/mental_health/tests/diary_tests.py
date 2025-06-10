@@ -14,7 +14,7 @@ class DiaryTests(APITestCase, UserMixin):
             user=self.user,
             title = "Meu Diario",
             content = "COnteudo do diario",
-            datetime = '2007-04-20',
+            datetime = timezone.make_aware(timezone.datetime(2000,1,1)),
             mood = 'Excelente'
         )
 
@@ -22,7 +22,7 @@ class DiaryTests(APITestCase, UserMixin):
             user=self.user,
             title = "Meu Diario2",
             content = "Conteudo do diario",
-            datetime = '2007-04-20',
+            datetime = timezone.make_aware(timezone.datetime(2000,1,1)),
             mood = 'Excelente'
         )
 

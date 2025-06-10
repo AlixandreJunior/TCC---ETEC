@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
 
-from apps.physical_health.serializers.exercise import ExerciseSerializer, ExerciseLogSerializer
+from apps.physical_health.serializers.exercise import ExerciseSerializer, ExerciseLogWriteSerializer, ExerciseLogReadSerializer
 from apps.physical_health.models.exercise import Exercise, ExerciseLog
 
 class ExerciseListView(ListAPIView):
@@ -13,14 +13,10 @@ class ExerciseListView(ListAPIView):
 
     def get_queryset(self):
         queryset = Exercise.objects.all()
-
         type = self.request.GET.get('type')
-        difficulty = self.request.GET.get('difficulty')
 
         if type:
             queryset = queryset.filter(type = type)
-        if difficulty:
-            queryset = queryset.filter(difficulty = difficulty)
 
         if not queryset:
             raise NotFound("Exercícios não encontrados.")
@@ -28,17 +24,14 @@ class ExerciseListView(ListAPIView):
 
 class ExerciseLogView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ExerciseLogSerializer
+    serializer_class = ExerciseLogReadSerializer
     
     def get_queryset(self):
         queryset = ExerciseLog.objects.filter(user = self.request.user)
         type = self.request.GET.get('type')
-        difficulty = self.request.GET.get('difficulty')
 
         if type:
             queryset = queryset.filter(exercise__type = type)
-        if difficulty:
-            queryset = queryset.filter(exercise__difficulty = difficulty)
 
         if not queryset:
             raise NotFound("Registros de Exercícios não encontrados.")
@@ -46,7 +39,7 @@ class ExerciseLogView(ListAPIView):
     
 class ExerciseLogRegisterView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ExerciseLogSerializer
+    serializer_class = ExerciseLogWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(user = self.request.user)
