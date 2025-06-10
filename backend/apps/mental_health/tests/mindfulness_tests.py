@@ -59,23 +59,6 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
         self.assertIn('Exercícios de Mindfulness não encontrados.', response.json().get('detail'))
 
-    def test_get_mindfulness_with_filter_for_difficulty(self):
-        url = reverse('mental_health:mindfulness_list')
-
-        response = self.client.get(url, {'difficulty': 'Intermediário'})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = MindfulnessSerializer(self.mindfulness2).data
-        self.assertIn(expected_data, response.json())
-
-    def test_get_mindfulness_with_filter_for_difficulty_fail_for_404(self):
-        url = reverse('mental_health:mindfulness_list')
-
-        response = self.client.get(url, {'difficulty': 'ERROR'})
-
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
-        self.assertIn('Exercícios de Mindfulness não encontrados.', response.json().get('detail'))
-
     def test_get_mindfulness_fail_for_404(self):
         url = reverse('mental_health:mindfulness_list')
 
@@ -122,23 +105,6 @@ class MentalHealthTests(APITestCase, UserMixin):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
         self.assertIn('Registros de Mindfulness não encontrados.', response.json().get('detail'))
 
-    def test_get_mindfulness_log_with_filter_for_difficulty(self):
-        url = reverse('mental_health:mindfulness_log_list')
-
-        response = self.client.get(url, {'difficulty': 'Intermediário'})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = MindfulnessLogReadSerializer(self.mindfulness_log2).data
-        self.assertIn(expected_data, response.json())
-
-    def test_get_mindfulness_log_with_filter_for_difficulty_fail_for_404(self):
-        url = reverse('mental_health:mindfulness_log_list')
-
-        response = self.client.get(url, {'difficulty': 'ERROR'})
-
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
-        self.assertIn('Registros de Mindfulness não encontrados.', response.json().get('detail'))
-
 
     def test_get_mindfulness_log_fail_for_404(self):
         url = reverse('mental_health:mindfulness_log_list')
@@ -168,6 +134,8 @@ class MentalHealthTests(APITestCase, UserMixin):
 
         payload = {
             'mindfulness': self.mindfulness.pk,
+            'duration': 10,
+            'description': 'Teste'
         }
 
         response = self.client.post(url, payload)

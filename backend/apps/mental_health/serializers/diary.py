@@ -28,7 +28,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         queryset=Activity.objects.all(),
         many=True,
         write_only=True,
-        source='activities'
+        source='activities',
     )
 
     class Meta:
@@ -38,6 +38,19 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
             'content',
             'datetime',
             'mood',
-            'activity_ids',
+            'activity',
             'photo',
         ]
+
+    def validate(self, data):
+        request = self.context.get('request')
+        user = request.user if request else None
+        title = data.get('title')
+
+        if self.instance is None and user and title:
+            if Diary.objects.filter(user=user, title=title).exists():
+                raise serializers.ValidationError({
+                    'title': 'Você já criou um diário com esse título.'
+                })
+
+        return data

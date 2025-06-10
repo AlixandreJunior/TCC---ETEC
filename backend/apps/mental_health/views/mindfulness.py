@@ -14,14 +14,10 @@ class MindfulnessListView(ListAPIView):
 
     def get_queryset(self):
         queryset = Mindfulness.objects.all()
-
         type = self.request.GET.get('type')
-        difficulty = self.request.GET.get('difficulty')
 
         if type:
             queryset = queryset.filter(type = type)
-        if difficulty:
-            queryset = queryset.filter(difficulty = difficulty)
 
         if not queryset:
             raise NotFound("Exercícios de Mindfulness não encontrados.")
@@ -34,12 +30,9 @@ class MindfulnessLogListView(ListAPIView):
     def get_queryset(self):
         queryset = MindfulnessLog.objects.filter(user = self.request.user)
         type = self.request.GET.get('type')
-        difficulty = self.request.GET.get('difficulty')
 
         if type:
             queryset = queryset.filter(mindfulness__type = type)
-        if difficulty:
-            queryset = queryset.filter(mindfulness__difficulty = difficulty)
 
         if not queryset:
             raise NotFound("Registros de Mindfulness não encontrados.")
