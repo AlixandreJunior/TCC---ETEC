@@ -11,7 +11,6 @@ class HydratationTests(APITestCase, UserMixin):
         self.hydratation_log = HydrationLog.objects.create(
             user=self.user,
             quantity=2000,
-            goal_achieved=True,
         )
     
     def test_get_hydratation(self):
@@ -49,7 +48,6 @@ class HydratationTests(APITestCase, UserMixin):
 
         payload = {
             'quantity': 1000,
-            'goal_achieved': False
         }
 
         response = self.client.post(url, payload)
@@ -63,7 +61,6 @@ class HydratationTests(APITestCase, UserMixin):
         self.hydratation_log.delete()
 
         payload = {
-            'goal_achieved': False
         }
 
         response = self.client.post(url, payload)
@@ -78,7 +75,6 @@ class HydratationTests(APITestCase, UserMixin):
 
         payload = {
             'quantity': 1000,
-            'goal_achieved': False
         }
 
         response = self.client.post(url, payload)

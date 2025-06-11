@@ -3,7 +3,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from "react-native"
 import { Heart, Bell, MoreHorizontal, CheckCircle, Droplet, Activity } from "lucide-react-native"
 import { useState } from "react"
-import { styles} from "./styles";
+import { styles } from "./styles"
 import { Feather } from "@expo/vector-icons"
 
 export default function FisicoScreen() {
@@ -69,6 +69,8 @@ export default function FisicoScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        
+        {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerIcon}>
             <Heart size={24} color="#4F96FF" />
@@ -78,134 +80,44 @@ export default function FisicoScreen() {
             <Bell size={24} color="#000" />
             <View style={styles.notificationBadge} />
           </View>
-       </View>
+        </View>
 
+        {/* Frase motivacional */}
         <View style={styles.quoteCard}>
           <Text style={styles.quoteText}>É importante agradecer pelo hoje sem nunca desistir do amanhã</Text>
         </View>
 
-        <View style={styles.checkInCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.cardTitle}>Check In Físicos</Text>
-            <TouchableOpacity>
-              <MoreHorizontal size={24} color="#9CA3AF" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.lastCheckIn}>Último Check-In:</Text>
-
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>Nível de Energia</Text>
-            <View style={styles.levelRow}>
-              <Text style={styles.levelNumber}>1</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progress, { width: "70%", backgroundColor: "#10B981" }]} />
-              </View>
-              <Text style={styles.levelNumber}>10</Text>
-            </View>
-          </View>
-
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>Nível de Atividade</Text>
-            <View style={styles.levelRow}>
-              <Text style={styles.levelNumber}>1</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progress, { width: "60%", backgroundColor: "#3B82F6" }]} />
-              </View>
-              <Text style={styles.levelNumber}>10</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIcon}>
-                <Text style={styles.statusIconText}>🍽️</Text>
-              </View>
-              <Text style={styles.statusText}>Alimentação Boa</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIcon}>
-                <Text style={styles.statusIconText}>😴</Text>
-              </View>
-              <Text style={styles.statusText}>Sono Excelente</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.medicationIcon}>
-                <Text style={styles.medicationIconText}>💊</Text>
-              </View>
-              <Text style={[styles.statusText, styles.blueText]}>Sem Medicação</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <View style={styles.painIcon}>
-                <CheckCircle size={16} color="#fff" />
-              </View>
-              <Text style={styles.statusText}>Sem Dor</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.normalUseIcon}>
-                <Text style={styles.normalUseIconText}>📱</Text>
-              </View>
-              <Text style={styles.statusText}>Uso Normal</Text>
-            </View>
-          </View>
-
-          <View style={styles.noteContainer}>
-            <Text style={styles.noteText}>"Tive um dia difícil no trabalho, mas estou tentando manter a calma."</Text>
-          </View>
-
-          <Text style={styles.dateText}>29 Abril, 2025 • 14:30</Text>
-
-          <TouchableOpacity style={styles.detailsButton}>
-            <Text style={styles.detailsButtonText}>Ver detalhes</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.checkInButton} onPress={() => setCheckinModalVisible(true)}>
-          <CheckCircle size={20} color="#fff" style={styles.checkIcon} />
-          <Text style={styles.checkInButtonText}>Fazer Check-in de Humor</Text>
-        </TouchableOpacity>
-
+        {/* Hidratação */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Hidratação</Text>
             <Droplet size={20} color="#3B82F6" />
           </View>
-
           <View style={styles.hydrationInfo}>
             <Text style={styles.currentValue}>1,5L</Text>
             <Text style={styles.goalValue}>Meta: 2L</Text>
           </View>
-
           <View style={styles.progressBarWide}>
             <View style={[styles.progressFill, { width: "75%", backgroundColor: "#3B82F6" }]} />
           </View>
-
           <TouchableOpacity style={styles.registerButton}>
             <Text style={styles.registerButtonText}>+ Registrar água</Text>
           </TouchableOpacity>
         </View>
 
+        {/* Passos */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Passos</Text>
             <Activity size={20} color="#84CC16" />
           </View>
-
           <View style={styles.stepsInfo}>
             <Text style={styles.currentValue}>5.340</Text>
             <Text style={styles.goalValue}>Meta: 8.000</Text>
           </View>
-
           <View style={styles.progressBarWide}>
             <View style={[styles.progressFill, { width: "66%", backgroundColor: "#84CC16" }]} />
           </View>
-
           <Text style={styles.motivationalText}>Você está no caminho certo! Continue assim!</Text>
         </View>
 
@@ -237,7 +149,10 @@ export default function FisicoScreen() {
             {exercises.map((_, index) => (
               <View
                 key={index}
-                style={[styles.paginationDot, index === currentExerciseIndex ? styles.paginationDotActive : {}]}
+                style={[
+                  styles.paginationDot,
+                  index === currentExerciseIndex ? styles.paginationDotActive : {},
+                ]}
               />
             ))}
           </View>

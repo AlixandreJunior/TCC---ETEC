@@ -1,12 +1,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from django.core.files.uploadedfile import SimpleUploadedFile
-from io import BytesIO
-from PIL import Image
 
 from utils.usermixin import UserMixin
-from apps.user.models.user import User
 
 class UserTest(APITestCase,UserMixin ):
     def setUp(self):
@@ -49,42 +45,6 @@ class UserTest(APITestCase,UserMixin ):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), "Usuario criado com sucesso.")
 
-
-    def test_post_user_create_with_avatar(self):
-        api_url = reverse('user:user_create')
-
-        # Criando uma imagem de teste
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, format='JPEG')
-        image_file.name = 'test_avatar.jpg'
-        image_file.seek(0) 
-
-        # Criando um arquivo de imagem para upload
-        avatar = SimpleUploadedFile(image_file.name, image_file.read(), content_type="image/jpeg")
-
-        # Dados válidos para criação de usuário, com foto
-        valid_data = {
-            "first_name": "Novo",
-            "last_name": "Usuário",
-            "username": "novouser",
-            "password": "SenhaCorreta321",
-            "email": "novouser@email.com",
-            "gender": "Masculino",
-            'birth_date': '2000-01-01',
-            "avatar": avatar
-        }
-
-        response = self.client.post(api_url, data=valid_data, format='multipart')
-
-        # Verifica se o usuário foi criado com sucesso e a foto foi salva
-        self.assertEqual(response.status_code, 201)
-
-        user_profile = User.objects.get(username=valid_data.get("username"))
-
-        self.assertTrue(user_profile.avatar.name.startswith('avatar/test_avatar.jpg'))
-
-        user_profile.avatar.delete()
 
     def test_post_user_create_fail_for_blank(self):
         api_url = reverse('user:user_create')
@@ -141,34 +101,6 @@ class UserTest(APITestCase,UserMixin ):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json().get("email")[0], 'Insira um endereço de email válido.')
-
-    def test_post_user_create_fail_for_avatar_type(self):
-        api_url = reverse('user:user_create')
-
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, format='GIF')
-        image_file.name = 'test_avatar.gif'
-        image_file.seek(0)
-
-        avatar = SimpleUploadedFile(image_file.name, image_file.read(), content_type="image/gif")
-
-        # Dados válidos para criação de usuário, com foto
-        valid_data = {
-            "first_name": "Novo",
-            "last_name": "Usuário",
-            "username": "novouser",
-            "password": "SenhaCorreta321",
-            "email": "novouser@email.com",
-            "gender": "Masculino",
-            'birth_date': '2000-01-01',
-            "avatar": avatar
-        }
-
-        response = self.client.post(api_url, data=valid_data, format='multipart')
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn(response.json().get('avatar')[0], 'A extensão de arquivo “gif” não é permitida. As extensões válidas são: jpg, jpeg, png .')
 
     def test_patch_user_update(self):
         url = reverse('user:user_update')

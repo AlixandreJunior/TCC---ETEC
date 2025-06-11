@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Modal } from "react-native"
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { colors } from "@/styles/colors"
 import { styles } from "./styles"
-import { Bell, Heart } from "lucide-react-native"
+import { Navbar } from "@/components/Navbar"
 
 export default function MentalScreen() {
   const insets = useSafeAreaInsets()
@@ -20,15 +20,7 @@ export default function MentalScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Heart size={24} color={colors.blue.main} />
-          </View>
-          <Text style={styles.headerTitle}>Mental</Text>
-          <TouchableOpacity>
-            <Bell size={24} color={colors.text.secondary} />
-          </TouchableOpacity>
-        </View>
+        <Navbar title="Mental" />
 
         <View style={styles.quoteCard}>
           <Text style={styles.quoteText}>É importante agradecer pelo hoje sem nunca desistir do amanhã</Text>
@@ -63,86 +55,6 @@ export default function MentalScreen() {
             </View>
           </View>
         </View>
-
-        <View style={styles.checkInCard}>
-          <View style={styles.cardHeaderRow}>
-            <View style={styles.cardTitleContainer}>
-              <Text style={styles.cardTitle}>Check In Mental</Text>
-            </View>
-            <TouchableOpacity>
-              <Feather name="more-horizontal" size={24} color="#6B7280" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.lastCheckIn}>Último Check-In:</Text>
-
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>Nível de Energia</Text>
-            <View style={styles.levelRow}>
-              <Text style={styles.levelNumber}>1</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progress, { width: "70%", backgroundColor: "#10B981" }]} />
-              </View>
-              <Text style={styles.levelNumber}>10</Text>
-            </View>
-          </View>
-
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>Nível de Atividade</Text>
-            <View style={styles.levelRow}>
-              <Text style={styles.levelNumber}>1</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progress, { width: "50%", backgroundColor: "#60A5FA" }]} />
-              </View>
-              <Text style={styles.levelNumber}>10</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIconGreen}>
-                <Feather name="frown" size={16} color="#fff" />
-              </View>
-              <Text style={styles.statusText}>Triste</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIconBrown}>
-                <MaterialCommunityIcons name="account" size={16} color="#fff" />
-              </View>
-              <Text style={styles.statusText}>Se sente sozinho</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIconPurple}>
-                <Feather name="heart" size={16} color="#fff" />
-              </View>
-              <Text style={styles.statusText}>Sem Medicação</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIconGray}>
-                <Feather name="alert-triangle" size={16} color="#fff" />
-              </View>
-              <Text style={styles.statusText}>Uso Normal</Text>
-            </View>
-          </View>
-
-          <View style={styles.noteContainer}>
-            <Text style={styles.noteText}>"Tive um dia difícil no trabalho, mas estou tentando manter a calma."</Text>
-          </View>
-
-          <Text style={styles.dateText}>29 Abril, 2025 • 14:30</Text>
-
-          <TouchableOpacity style={styles.detailsButton} onPress={() => console.log('A')}>
-            <Text style={styles.detailsButtonText}>Ver detalhes</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.checkInButton} onPress={() => console.log('A')}>
-          <Feather name="check" size={20} color="#fff" style={styles.checkIcon} />
-          <Text style={styles.checkInButtonText}>Fazer Check-in Mental</Text>
-        </TouchableOpacity>
 
         <View style={styles.diaryCard}>
           <View style={styles.cardHeaderRow}>

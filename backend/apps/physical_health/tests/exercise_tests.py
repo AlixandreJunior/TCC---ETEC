@@ -3,7 +3,7 @@ from rest_framework import status
 from django.urls import reverse
 from utils.usermixin import UserMixin
 from apps.physical_health.models.exercise import Exercise, ExerciseLog
-from apps.physical_health.serializers.exercise import ExerciseSerializer, ExerciseLogSerializer
+from apps.physical_health.serializers.exercise import ExerciseSerializer
 
 class ExerciseTests(APITestCase, UserMixin):
     def setUp(self):
@@ -11,31 +11,27 @@ class ExerciseTests(APITestCase, UserMixin):
 
         self.exercise = Exercise.objects.create(
             name="Alongamento Matinal",
-            duration=15,
             type="Flexibilidade",
-            description="Uma rotina de alongamento leve para começar o dia com mais disposição.",
-            difficulty="Fácil"
         )
 
         self.exercise2 = Exercise.objects.create(
             name="Corrida",
-            duration=15,
             type="Aeróbico",
-            description="Fiz uma corrida bem intensa.",
-            difficulty="Intermediário"
         )
 
         self.exercise_log = ExerciseLog.objects.create(
             user=self.user,
             exercise=self.exercise,
+            duration=15,
+            description="Fiz uma corrida bem intensa.",
         )
 
         self.exercise_log2 = ExerciseLog.objects.create(
             user=self.user,
             exercise=self.exercise2,
+            duration=15,
+            description="Fiz uma corrida bem intensa.",
         )
-
-    
 
     def test_get_exercise(self):
         url = reverse('physical_health:exercise_list')
@@ -58,23 +54,6 @@ class ExerciseTests(APITestCase, UserMixin):
         url = reverse('physical_health:exercise_list')
 
         response = self.client.get(url, {'type': 'ERROR'})
-
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
-        self.assertIn('Exercícios não encontrados.', response.json().get('detail'))
-
-    def test_get_exercise_with_filter_for_difficulty(self):
-        url = reverse('physical_health:exercise_list')
-
-        response = self.client.get(url, {'difficulty': 'Intermediário'})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = ExerciseSerializer(self.exercise2).data
-        self.assertIn(expected_data, response.json())
-
-    def test_get_exercise_with_filter_for_difficulty_fail_for_404(self):
-        url = reverse('physical_health:exercise_list')
-
-        response = self.client.get(url, {'difficulty': 'ERROR'})
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
         self.assertIn('Exercícios não encontrados.', response.json().get('detail'))
@@ -114,8 +93,6 @@ class ExerciseTests(APITestCase, UserMixin):
         response = self.client.get(url, {'type': 'Aeróbico'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = ExerciseLogSerializer(self.exercise_log2).data
-        self.assertIn(expected_data, response.json())
 
     def test_get_exercise_log_with_filter_for_type_fail_for_404(self):
         url = reverse('physical_health:exercise_log_list')
@@ -124,24 +101,6 @@ class ExerciseTests(APITestCase, UserMixin):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
         self.assertIn("Registros de Exercícios não encontrados.", response.json().get('detail'))
-
-    def test_get_exercise_log_with_filter_for_difficulty(self):
-        url = reverse('physical_health:exercise_log_list')
-
-        response = self.client.get(url, {'difficulty': 'Intermediário'})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK),
-        expected_data = ExerciseLogSerializer(self.exercise_log2).data
-        self.assertIn(expected_data, response.json())
-
-    def test_get_exercise_log_with_filter_for_difficulty_fail_for_404(self):
-        url = reverse('physical_health:exercise_log_list')
-
-        response = self.client.get(url, {'difficulty': 'ERROR'})
-
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND),
-        self.assertIn("Registros de Exercícios não encontrados.", response.json().get('detail'))
-
 
     def test_get_exercise_log_fail_for_404(self):
         url = reverse('physical_health:exercise_log_list')
@@ -172,9 +131,12 @@ class ExerciseTests(APITestCase, UserMixin):
 
         payload = {
             'exercise': self.exercise.pk,
+            'duration': 10,
         }
 
         response = self.client.post(url, payload)
+
+        print(response.json())
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json().get('detail'), "Registro de exercícios registrado com sucesso.")

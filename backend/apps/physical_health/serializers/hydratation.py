@@ -6,4 +6,4 @@ class HydrationLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HydrationLog
-        fields = ['id', 'user', 'quantity', 'goal_achieved', 'date']
+        fields = ['id', 'user', 'quantity', 'date']

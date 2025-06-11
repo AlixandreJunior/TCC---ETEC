@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, Switch, TouchableOpacity } from 'react-native';
 import { Brain, Heart, Dumbbell, MailIcon, Calendar, User as UserIcon, Clock, BellIcon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '@/components/Header';

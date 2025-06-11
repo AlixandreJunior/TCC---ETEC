@@ -3,12 +3,15 @@ from apps.mental_health.models.mindfulness import Mindfulness, MindfulnessLog
 
 @admin.register(Mindfulness)
 class MindfulnessAdmin(admin.ModelAdmin):
-    list_display = ('name', 'duration', 'type', 'difficulty')
-    search_fields = ('name', 'type', 'difficulty')
-    list_filter = ('type', 'difficulty')
+    list_display = ['id', 'name', 'type']
+    list_filter = ['type']
+    search_fields = ['name']
+
 
 @admin.register(MindfulnessLog)
 class MindfulnessLogAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mindfulness', 'created_at')
-    list_filter = ('created_at',)
-    search_fields = ('user__username', 'mindfulness__name')
+    list_display = ['id', 'user', 'mindfulness', 'duration', 'datetime']
+    list_filter = ['datetime', 'mindfulness__type']
+    search_fields = ['user__username', 'mindfulness__name', 'description']
+    autocomplete_fields = ['user', 'mindfulness']
+    date_hierarchy = 'datetime'
