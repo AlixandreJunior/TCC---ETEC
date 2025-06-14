@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios'; // Adicionando tipos Axios
-import { clearToken, getAccessToken, getRefreshToken, saveToken } from './jwt_store';
+import { clearTokens, getToken, getRefreshToken, saveToken } from './jwt_store';
 
 const apiUrl = 'http://localhost:8000/api/'; // Lembre-se de usar seu IP local real aqui se estiver em um dispositivo/emulador!
 
@@ -13,7 +13,7 @@ const api = axios.create({
 //@ts-ignore
 api.interceptors.request.use(async (config: AxiosRequestConfig) => {
   try {
-    const token = await getAccessToken();
+    const token = await getToken();
     console.log(token)
     if (token) {
       if (!config.headers) {
@@ -35,14 +35,14 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; 
       try {
-        const refreshToken = await getRefreshToken(); // Usando getItemAsync diretamente
+        const refreshToken = await getRefreshToken();
 
         if (!refreshToken) {
           console.warn('Refresh token ausente. Redirecionando para login.');
-          return Promise.reject(error); // Rejeita o erro para que seja tratado no chamador
+          return Promise.reject(error);
         }
 
-        const response = await axios.post<any>(`${apiUrl}/refresh/`, { // Tipagem de resposta, ajuste conforme sua API
+        const response = await axios.post<any>(`${apiUrl}/refresh/`, {
           refresh: refreshToken,
         });
 
@@ -59,7 +59,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError: any) { // Captura erros durante o processo de refresh
         console.warn('Erro ao tentar renovar token:', refreshError.response?.data || refreshError.message);
-        clearToken()
+        await clearTokens()
         return Promise.reject(refreshError); // Rejeita o erro de refresh
       }
     }

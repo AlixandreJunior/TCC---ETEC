@@ -5,7 +5,6 @@ import { styles } from './styles'
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native"
 import api from "@/services/api"
 import { saveToken } from "@/services/jwt_store"
-import * as SecureStore from 'expo-secure-store';
 
 
 export const LoginScreen = () =>  {
@@ -28,8 +27,8 @@ export const LoginScreen = () =>  {
 
       if (response.status === 200){
         const data = response.data
-        saveToken(data.token, data.refresh)
-        router.push("/(tabs)")
+        await saveToken(data.access, data.refresh);
+        router.push("./(tabs)")
         return
       }
 

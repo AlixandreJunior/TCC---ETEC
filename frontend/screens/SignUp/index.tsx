@@ -1,17 +1,43 @@
 import { useState } from "react"
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView, Platform, Alert, } from "react-native"
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from "react-native"
 import { router } from "expo-router"
-import { Calendar, User, Mail, Image as ImageIcon, ChevronDown, Lock, EyeOff, Eye } from "lucide-react-native"
-import { styles } from './styles'
+import {
+  Calendar,
+  User,
+  Mail,
+  Image as ImageIcon,
+  ChevronDown,
+  Lock,
+  EyeOff,
+  Eye,
+} from "lucide-react-native"
+import DateTimePicker from "@react-native-community/datetimepicker"
+import { styles } from "./styles"
 import api from "@/services/api"
+
+const genderOptions = [
+  "Masculino",
+  "Feminino",
+  "Outro",
+  "Prefiro não dizer",
+]
 
 export function SignupScreen() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
-  const [gender, setGender] = useState("Masculino")
-  const [birthDate, setBirthDate] = useState("")
+  const [showGenderModal, setShowGenderModal] = useState(false)
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
 
@@ -29,20 +55,23 @@ export function SignupScreen() {
       return
     }
 
-    try{
-      const response = await api.post('user/create/', {username,firstName,lastName,email,gender,birthDate, password})
+    try {
+      const response = await api.post("user/create/", {
+        username,
+        firstName,
+        lastName,
+        email,
+        password,
+      })
 
-      if (response.status === 201){
+      if (response.status === 201) {
         router.push("/login")
         return
+      } else {
+        console.log("erro ao fazer o cadastro")
       }
-
-      else {
-        console.log("erro ao fazer o login")
-      }
-    }
-    catch{
-        console.log("erro ao fazer o login")
+    } catch {
+      console.log("erro ao fazer o cadastro")
     }
   }
 
@@ -50,7 +79,7 @@ export function SignupScreen() {
     router.push("/login")
   }
 
-    const toggleShowPassword = () => {
+  const toggleShowPassword = () => {
     setShowPassword(!showPassword)
   }
 
@@ -60,7 +89,10 @@ export function SignupScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.logoContainer}>
           <Image
             source={{
@@ -119,26 +151,6 @@ export function SignupScreen() {
             />
           </View>
 
-          <View style={styles.rowContainer}>
-            <TouchableOpacity style={styles.inputContainerHalf}>
-              <View style={styles.dropdownContainer}>
-                <Text style={[styles.input, !gender ? styles.placeholder : null]}>{gender || "Seu gênero"}</Text>
-                <ChevronDown size={20} color="#9CA3AF" />
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.inputContainerHalf}>
-              <Calendar size={20} color="#9CA3AF" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Data de nascimento"
-                placeholderTextColor="#9CA3AF"
-                value={birthDate}
-                onChangeText={setBirthDate}
-              />
-            </View>
-          </View>
-
           <View style={styles.inputContainer}>
             <Lock size={20} color="#9CA3AF" style={styles.inputIcon} />
             <TextInput
@@ -150,7 +162,11 @@ export function SignupScreen() {
               secureTextEntry={!showPassword}
             />
             <TouchableOpacity onPress={toggleShowPassword} style={styles.eyeIcon}>
-              {showPassword ? <EyeOff size={20} color="#9CA3AF" /> : <Eye size={20} color="#9CA3AF" />}
+              {showPassword ? (
+                <EyeOff size={20} color="#9CA3AF" />
+              ) : (
+                <Eye size={20} color="#9CA3AF" />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -167,7 +183,9 @@ export function SignupScreen() {
         </View>
 
         <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>Sua jornada para uma vida mais{"\n"}saudável começa agora!</Text>
+          <Text style={styles.footerText}>
+            Sua jornada para uma vida mais{"\n"}saudável começa agora!
+          </Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -33,28 +33,21 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="Mental"
+        name="Mental/index"
         options={{
           title: 'Mental',
           tabBarIcon: ({ color, size }) => <Brain size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="activity"
+        name="Activity/index"
         options={{
           title: 'Atividades',
           tabBarIcon: ({ color, size }) => <Heart size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="Profile/index"
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
