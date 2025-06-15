@@ -1,5 +1,5 @@
-import api from "./api";
-import { saveToken } from "./jwt_store";
+import api from "../api";
+import { saveToken } from "../jwt_store";
 
 export interface LoginResponse {
   access: string;
@@ -30,3 +30,4 @@ export const login = async ( email: string, password: string ): Promise<LoginRes
     throw new Error("Erro ao tentar fazer login.");
   }
 };
+

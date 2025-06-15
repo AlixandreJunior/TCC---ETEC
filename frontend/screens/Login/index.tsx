@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, P
 import { router } from "expo-router"
 import { styles } from './styles'
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native"
-import { login } from "@/services/auth"
+import { login } from "@/services/auth/login"
 import { getUser } from "@/services/user/getUser"
 
 export const LoginScreen = () =>  {

@@ -44,7 +44,6 @@ export function SignupScreen() {
     try{
       console.log('a')
       await createAccount(username, firstName, lastName, email, password)
-      await getUser()
       router.push("/login")
     }
     catch (error: any){

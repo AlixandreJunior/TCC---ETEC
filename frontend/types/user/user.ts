@@ -7,11 +7,3 @@ export interface User{
     password: string
     created_at: Date
 }
-
-export interface Goal{
-    user: number
-    hydration_goal: number
-    steps_goal: number
-    exercise_goal: number
-    mindfulness_goal: number
-}

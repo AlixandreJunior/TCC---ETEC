@@ -1,4 +1,4 @@
-import { User } from "@/types/user";
+import { User } from "@/types/user/user";
 import api from "../api";
 import { createAccountResponse } from "./createAccount";
 
