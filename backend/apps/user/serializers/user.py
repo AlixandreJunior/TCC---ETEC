@@ -15,7 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'password',
             'created_at',
-            'notifications',
         ]
         read_only_fields = ['id', 'created_at',]
     

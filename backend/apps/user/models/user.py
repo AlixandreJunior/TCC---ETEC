@@ -29,7 +29,6 @@ class User(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    notifications = models.BooleanField(default=True)
 
     objects = UsersManager()
     groups = None

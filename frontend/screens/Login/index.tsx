@@ -3,9 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, P
 import { router } from "expo-router"
 import { styles } from './styles'
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native"
-import api from "@/services/api"
-import { saveToken } from "@/services/jwt_store"
-
+import { login } from "@/services/auth"
+import { getUser } from "@/services/user/getUser"
 
 export const LoginScreen = () =>  {
   const [email, setEmail] = useState("")
@@ -13,33 +12,14 @@ export const LoginScreen = () =>  {
   const [showPassword, setShowPassword] = useState(false)
 
   const handleLogin = async () => {
-    if (!email.trim()) {
-      Alert.alert("Erro", "Por favor, digite seu email")
-      return
+    try {
+      await getUser()
+      await login(email, password);
+      router.push("/(tabs)/Mental");
+    } catch (error: any) {
+      Alert.alert("Erro", error.message || "Erro inesperado ao fazer login.");
     }
-    if (!password.trim()) {
-      Alert.alert("Erro", "Por favor, digite sua senha")
-      return
-    }
-
-    try{
-      const response = await api.post('login/', {email, password})
-
-      if (response.status === 200){
-        const data = response.data
-        await saveToken(data.access, data.refresh);
-        router.push("./(tabs)")
-        return
-      }
-
-      else {
-        console.log("erro ao fazer o login")
-      }
-    }
-    catch(e){
-        console.log(e)
-    }
-  }
+  };
 
   const handleSignup = () => {
     router.push("/signup")

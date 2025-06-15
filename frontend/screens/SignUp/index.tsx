@@ -21,9 +21,9 @@ import {
   EyeOff,
   Eye,
 } from "lucide-react-native"
-import DateTimePicker from "@react-native-community/datetimepicker"
 import { styles } from "./styles"
-import api from "@/services/api"
+import { createAccount } from "@/services/user/createAccount"
+import { getUser } from "@/services/user/getUser"
 
 const genderOptions = [
   "Masculino",
@@ -37,41 +37,19 @@ export function SignupScreen() {
   const [lastName, setLastName] = useState("")
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
-  const [showGenderModal, setShowGenderModal] = useState(false)
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
 
   const handleCreateAccount = async () => {
-    if (!firstName.trim() || !lastName.trim()) {
-      Alert.alert("Erro", "Por favor, preencha seu nome e sobrenome")
-      return
+    try{
+      console.log('a')
+      await createAccount(username, firstName, lastName, email, password)
+      await getUser()
+      router.push("/login")
     }
-    if (!username.trim()) {
-      Alert.alert("Erro", "Por favor, escolha um nome de usuário")
-      return
-    }
-    if (!email.trim()) {
-      Alert.alert("Erro", "Por favor, digite seu email")
-      return
-    }
-
-    try {
-      const response = await api.post("user/create/", {
-        username,
-        firstName,
-        lastName,
-        email,
-        password,
-      })
-
-      if (response.status === 201) {
-        router.push("/login")
-        return
-      } else {
-        console.log("erro ao fazer o cadastro")
-      }
-    } catch {
-      console.log("erro ao fazer o cadastro")
+    catch (error: any){
+      console.log('a')
+      Alert.alert("Erro", error.message || "Erro inesperado ao fazer login.");
     }
   }
 
