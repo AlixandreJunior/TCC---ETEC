@@ -30,4 +30,4 @@ class Diary(models.Model):
     photo = models.ImageField(upload_to='diary/photos/', null=True, blank=True)
 
     def __str__(self):
-        return f"Diário de {self.user.username} em {self.date.strftime('%d/%m/%Y')}"
+        return f"Diário de {self.user.username} em {self.datetime.strftime('%d/%m/%Y')}"

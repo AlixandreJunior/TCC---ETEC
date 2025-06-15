@@ -26,9 +26,9 @@ class DiaryObjectView(RetrieveAPIView):
     serializer_class = DiaryReadSerializer
 
     def get_object(self):
-        title = self.kwargs.get('title')
+        id = self.kwargs.get('id')
         try:
-            return Diary.objects.get(user=self.request.user, title = title)
+            return Diary.objects.get(user=self.request.user, id = id)
         except Diary.DoesNotExist:
             raise NotFound("Diário não encontrado.")
     
@@ -37,9 +37,9 @@ class DiaryUpdateView(UpdateAPIView):
     serializer_class = DiaryWriteSerializer
 
     def get_object(self):
-        title = self.kwargs.get('title')
+        id = self.kwargs.get('id')
         try:
-            return Diary.objects.get(user=self.request.user, title = title)
+            return Diary.objects.get(user=self.request.user, id = id)
         except Diary.DoesNotExist:
             raise NotFound("Diário não encontrado.")
 

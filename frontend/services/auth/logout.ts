@@ -6,21 +6,21 @@ export interface createAccountResponse{
 }
 
 export const logout = async () => {
-    const refreshToken = await getRefreshToken();
+    const refresh = await getRefreshToken();
     
-    if (!refreshToken) {
+    if (!refresh) {
       throw new Error("Refresh Token não existe.");
     }
 
     try {
-        const response = await api.post<createAccountResponse>("logout/", {refreshToken})
+        const response = await api.post<createAccountResponse>("logout/", {refresh: refresh})
 
         const data = response.data
         return data
 
     } catch(error: any) {
       if (error.response?.data?.detail) {
-      throw new Error(error.response.data.detail); // erro enviado pelo backend
+      throw new Error(error.response.data.detail);
     }
 
     throw new Error("Erro ao tentar criar usuario");
