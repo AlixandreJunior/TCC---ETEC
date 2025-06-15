@@ -5,7 +5,7 @@ import { styles } from './styles'
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native"
 import { login } from "@/services/auth/login"
 import { logout } from "@/services/auth/logout"
-import { getDiaryList } from "@/services/diary/list"
+import { getDiaryList } from "@/services/diary/listDiary"
 
 export const LoginScreen = () =>  {
   const [email, setEmail] = useState("")
