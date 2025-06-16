@@ -1,5 +1,4 @@
 import api from "../api";
-import { saveToken } from "../jwt_store";
 
 export interface LoginResponse {
   access: string;
@@ -19,7 +18,6 @@ export const login = async ( email: string, password: string ): Promise<LoginRes
       throw new Error("Resposta da API incompleta.");
     }
 
-    await saveToken(data.access, data.refresh);
     return data;
 
   } catch (error: any) {

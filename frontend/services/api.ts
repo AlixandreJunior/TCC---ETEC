@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios'; // Adicionando tipos Axios
-import { clearTokens, getToken, getRefreshToken, saveToken } from './jwt_store';
+import { clearTokens, getToken, getRefreshToken, saveToken } from '../stores/authStore';
 
 const apiUrl = 'http://localhost:8000/api/'; // Lembre-se de usar seu IP local real aqui se estiver em um dispositivo/emulador!
 

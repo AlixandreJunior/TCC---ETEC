@@ -1,5 +1,5 @@
 import api from "../api"
-import { getRefreshToken } from "../jwt_store";
+import { getRefreshToken } from "../../stores/authStore";
 
 export interface createAccountResponse{
     detail: string

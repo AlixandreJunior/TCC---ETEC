@@ -4,8 +4,7 @@ import { router } from "expo-router"
 import { styles } from './styles'
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native"
 import { login } from "@/services/auth/login"
-import { logout } from "@/services/auth/logout"
-import { getDiaryList } from "@/services/diary/listDiary"
+import { saveToken } from "@/stores/authStore"
 
 export const LoginScreen = () =>  {
   const [email, setEmail] = useState("")
@@ -14,8 +13,8 @@ export const LoginScreen = () =>  {
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
-      await getDiaryList()
+      const data = await login(email, password);
+      saveToken(data.access, data.refresh)
       router.push("/(tabs)/Mental");
     } catch (error: any) {
       Alert.alert("Erro", error.message || "Erro inesperado ao fazer login.");
