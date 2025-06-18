@@ -1,260 +1,134 @@
-"use client"
+import React from 'react';
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, StatusBar, StyleSheet } from 'react-native';
+import { AntDesign, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { styles } from './styles';
 
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from "react-native"
-import { Heart, Bell, MoreHorizontal, CheckCircle, Droplet, Activity } from "lucide-react-native"
-import { useState } from "react"
-import ExerciseFilterModal from "@/components/exercise-filter-modal"
-import FisicoCheckinScreen from "@/components/fisico-checkin-screen"
-import { spacing } from "@/styles/spacing"
-import { colors } from "@/styles/colors"
-import { Feather } from "@expo/vector-icons"
-import { styles } from "./styles"
-
-export default function FisicoScreen() {
-  const [filterModalVisible, setFilterModalVisible] = useState(false)
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
-  const [checkinModalVisible, setCheckinModalVisible] = useState(false)
-
-  const handleApplyFilters = (difficulties: string[], activityTypes: string[]) => {
-    console.log("Selected difficulties:", difficulties)
-    console.log("Selected activity types:", activityTypes)
-  }
-
-  const exercises = [
-    {
-      id: "1",
-      name: "Caminhada",
-      duration: "20 minutos",
-      intensity: "Intensidade moderada",
-      icon: "🚶‍♂️",
-      equipmentIcon: "💪",
-    },
-    {
-      id: "2",
-      name: "Alongamento",
-      duration: "15 minutos",
-      intensity: "Intensidade leve",
-      icon: "🧘‍♂️",
-      equipmentIcon: "🧘‍♀️",
-    },
-    {
-      id: "3",
-      name: "Corrida",
-      duration: "30 minutos",
-      intensity: "Intensidade alta",
-      icon: "🏃‍♂️",
-      equipmentIcon: "⏱️",
-    },
-  ]
-
-  const renderExerciseItem = ({ item }: { item: (typeof exercises)[number] }) => (
-    <View style={styles.exerciseCard}>
-      <View style={styles.exerciseContent}>
-        <View style={styles.exerciseIconContainer}>
-          <Text style={styles.exerciseIconText}>{item.icon}</Text>
-        </View>
-        <View style={styles.exerciseDetails}>
-          <Text style={styles.exerciseName}>{item.name}</Text>
-          <Text style={styles.exerciseTime}>
-            {item.duration} • {item.intensity}
-          </Text>
-        </View>
-        <View style={styles.exerciseIconContainer}>
-          <Text style={styles.exerciseIconText}>{item.equipmentIcon}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.startExerciseButton}>
-        <Text style={styles.startExerciseText}>Iniciar exercício</Text>
-      </TouchableOpacity>
-    </View>
-  )
+const HomeScreen = () => {
+  // Dados simulados para os checkboxes
+  const exerciseDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']; 
+  const mindfulnessDays = ['S', 'S', 'S', 'S', 'S']; 
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={styles.headerIcon}>
-            <Heart size={24} color="#4F96FF" />
-          </View>
-          <Text style={styles.headerTitle}>Físico</Text>
-          <View style={styles.notificationContainer}>
-            <Bell size={24} color="#000" />
-            <View style={styles.notificationBadge} />
-          </View>
-       </View>
-
-        <View style={styles.quoteCard}>
-          <Text style={styles.quoteText}>É importante agradecer pelo hoje sem nunca desistir do amanhã</Text>
+    <ScrollView>
+    <SafeAreaView>
+      <StatusBar barStyle="light-content" backgroundColor="#7ab868" />
+      <View style={styles.header}>
+        <View style={styles.avatarPlaceholder}>
+          <Text style={styles.avatarText}>A</Text>
         </View>
-
-        <View style={styles.checkInCard}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.cardTitle}>Check In Físicos</Text>
-            <TouchableOpacity>
-              <MoreHorizontal size={24} color="#9CA3AF" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.lastCheckIn}>Último Check-In:</Text>
-
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>Nível de Energia</Text>
-            <View style={styles.levelRow}>
-              <Text style={styles.levelNumber}>1</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progress, { width: "70%", backgroundColor: "#10B981" }]} />
-              </View>
-              <Text style={styles.levelNumber}>10</Text>
-            </View>
-          </View>
-
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>Nível de Atividade</Text>
-            <View style={styles.levelRow}>
-              <Text style={styles.levelNumber}>1</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progress, { width: "60%", backgroundColor: "#3B82F6" }]} />
-              </View>
-              <Text style={styles.levelNumber}>10</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIcon}>
-                <Text style={styles.statusIconText}>🍽️</Text>
-              </View>
-              <Text style={styles.statusText}>Alimentação Boa</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <View style={styles.statusIcon}>
-                <Text style={styles.statusIconText}>😴</Text>
-              </View>
-              <Text style={styles.statusText}>Sono Excelente</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.medicationIcon}>
-                <Text style={styles.medicationIconText}>💊</Text>
-              </View>
-              <Text style={[styles.statusText, styles.blueText]}>Sem Medicação</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <View style={styles.painIcon}>
-                <CheckCircle size={16} color="#fff" />
-              </View>
-              <Text style={styles.statusText}>Sem Dor</Text>
-            </View>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <View style={styles.statusItem}>
-              <View style={styles.normalUseIcon}>
-                <Text style={styles.normalUseIconText}>📱</Text>
-              </View>
-              <Text style={styles.statusText}>Uso Normal</Text>
-            </View>
-          </View>
-
-          <View style={styles.noteContainer}>
-            <Text style={styles.noteText}>"Tive um dia difícil no trabalho, mas estou tentando manter a calma."</Text>
-          </View>
-
-          <Text style={styles.dateText}>29 Abril, 2025 • 14:30</Text>
-
-          <TouchableOpacity style={styles.detailsButton}>
-            <Text style={styles.detailsButtonText}>Ver detalhes</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.checkInButton} onPress={() => setCheckinModalVisible(true)}>
-          <CheckCircle size={20} color="#fff" style={styles.checkIcon} />
-          <Text style={styles.checkInButtonText}>Fazer Check-in de Humor</Text>
+        <Text style={styles.headerText}>Mintró</Text>
+        <TouchableOpacity>
+          <AntDesign name="setting" size={24} color="white" />
         </TouchableOpacity>
+      </View>
 
-        <View style={styles.sectionCard}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Hidratação</Text>
-            <Droplet size={20} color="#3B82F6" />
-          </View>
-
-          <View style={styles.hydrationInfo}>
-            <Text style={styles.currentValue}>1,5L</Text>
-            <Text style={styles.goalValue}>Meta: 2L</Text>
-          </View>
-
-          <View style={styles.progressBarWide}>
-            <View style={[styles.progressFill, { width: "75%", backgroundColor: "#3B82F6" }]} />
-          </View>
-
-          <TouchableOpacity style={styles.registerButton}>
-            <Text style={styles.registerButtonText}>+ Registrar água</Text>
+      <ScrollView style={styles.mainContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.dateNavigation}>
+          <TouchableOpacity>
+            <AntDesign name="left" size={24} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.dateText}>Hoje</Text>
+          <TouchableOpacity>
+            <AntDesign name="right" size={24} color="#333" />
           </TouchableOpacity>
         </View>
 
-        <View style={styles.sectionCard}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Passos</Text>
-            <Activity size={20} color="#84CC16" />
+        <View style={styles.stepsCard}>
+          <View style={styles.stepsCircleContainer}>
+            <View style={styles.stepsIconBackground}>
+              <MaterialCommunityIcons name="shoe-print" size={50} color="white" />
+            </View>
           </View>
-
-          <View style={styles.stepsInfo}>
-            <Text style={styles.currentValue}>5.340</Text>
-            <Text style={styles.goalValue}>Meta: 8.000</Text>
+          <Text style={styles.stepsCount}>6.565</Text>
+          <Text style={styles.stepsLabel}>passos</Text>
+          <View style={styles.metricsContainer}>
+            <View style={styles.metricItem}>
+              <View style={styles.metricCircle}>
+                <MaterialCommunityIcons name="map-marker-outline" size={24} color="#61b3ed" />
+              </View>
+              <Text style={styles.metricValue}>5,31</Text>
+              <Text style={styles.metricLabel}>km</Text>
+            </View>
+            <View style={styles.metricItem}>
+              <View style={styles.metricCircle}>
+                <MaterialCommunityIcons name="fire" size={24} color="#f08080" />
+              </View>
+              <Text style={styles.metricValue}>2.203</Text>
+              <Text style={styles.metricLabel}>kcal</Text>
+            </View>
           </View>
-
-          <View style={styles.progressBarWide}>
-            <View style={[styles.progressFill, { width: "66%", backgroundColor: "#84CC16" }]} />
-          </View>
-
-          <Text style={styles.motivationalText}>Você está no caminho certo! Continue assim!</Text>
         </View>
 
-        <View style={styles.exercisesSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Exercícios Recomendados</Text>
-            <TouchableOpacity onPress={() => setFilterModalVisible(true)}>
-              <Feather name="sliders" size={20} color="#000" />
-            </TouchableOpacity>
+        <View style={styles.hydrationCard}>
+          <View style={styles.hydrationTextContent}>
+            <Text style={styles.hydrationTitle}>Hidratação</Text>
+            <Text style={styles.hydrationAmount}>750 ml</Text>
+            <Text style={styles.hydrationToday}>Hoje</Text>
           </View>
+          <View style={styles.hydrationIconCircle}>
+            <MaterialCommunityIcons name="water" size={40} color="white" />
+          </View>
+        </View>
 
-          <FlatList
-            data={exercises}
-            renderItem={renderExerciseItem}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            onMomentumScrollEnd={(event) => {
-              const contentOffset = event.nativeEvent.contentOffset.x
-              const viewSize = event.nativeEvent.layoutMeasurement.width
-              const newIndex = Math.floor(contentOffset / viewSize)
-              setCurrentExerciseIndex(newIndex)
-            }}
-            style={styles.exerciseCarousel}
-          />
+        <View style={styles.activityCard}>
+          <Text style={styles.activityTitle}>Dias com Exercício</Text>
+          <Text style={styles.activitySubtitle}>1 de 5</Text>
+          <View style={styles.checkboxesContainer}>
+            <View style={styles.checkboxItem}>
+              <MaterialCommunityIcons name="check-circle" size={24} color="#7ab868" />
+            </View>
+            {exerciseDays.map((day, index) => (
+              <View style={styles.checkboxItem} key={index}>
+                <Text style={styles.checkboxLabel}>{day}</Text>
+                <View
+                  style={[
+                    styles.checkbox,
+                    {
+                      backgroundColor: index === 0 ? '#7ab868' : '#e0e0e0',
+                      borderColor: index === 0 ? '#7ab868' : '#ccc',
+                    },
+                  ]}
+                >
+                  {index === 0 && <AntDesign name="check" size={18} color="white" />}
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
 
-          <View style={styles.paginationContainer}>
-            {exercises.map((_, index) => (
-              <View
-                key={index}
-                style={[styles.paginationDot, index === currentExerciseIndex ? styles.paginationDotActive : {}]}
-              />
+        <View style={[styles.activityCard, { backgroundColor: '#d4edda' }]}>
+          <Text style={styles.activityTitle}>Dias com Mindfulness</Text>
+          <Text style={styles.activitySubtitle}>1 de 5</Text>
+          <View style={styles.checkboxesContainer}>
+            <View style={styles.checkboxItem}>
+              <MaterialCommunityIcons name="check-circle" size={24} color="#7ab868" />
+            </View>
+            {mindfulnessDays.map((day, index) => (
+              <View style={styles.checkboxItem} key={index}>
+                <Text style={styles.checkboxLabel}>{day}</Text>
+                <View
+                  style={[
+                    styles.checkbox,
+                    {
+                      backgroundColor: index === 0 ? '#7ab868' : '#e0e0e0',
+                      borderColor: index === 0 ? '#7ab868' : '#ccc',
+                    },
+                  ]}
+                >
+                  {index === 0 && <AntDesign name="check" size={18} color="white" />}
+                </View>
+              </View>
             ))}
           </View>
         </View>
       </ScrollView>
-      
-      <ExerciseFilterModal
-          visible={filterModalVisible}
-          onClose={() => setFilterModalVisible(false)}
-          onApplyFilters={handleApplyFilters}
-        />
 
-      <FisicoCheckinScreen visible={checkinModalVisible} onClose={() => setCheckinModalVisible(false)} />
-    </View>
-  )
-}
+      <TouchableOpacity style={styles.addButton}>
+        <AntDesign name="plus" size={30} color="white" />
+      </TouchableOpacity>
+    </SafeAreaView>
+    </ScrollView>
+  );
+};
+
+export default HomeScreen;

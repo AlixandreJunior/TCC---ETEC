@@ -1,53 +1,56 @@
+// src/components/Header.tsx
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Heart, BellDot, Bell } from 'lucide-react-native';
-import { colors } from "@/styles/colors"
-import { spacing } from '@/styles/spacing';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors } from '@/styles/colors'; 
 
-
-interface HeaderProps {
-  title: string;
-}
-
-export default function Header({ title }: HeaderProps) {
+const Header: React.FC = () => {
   return (
     <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Heart size={24} color={colors.blue.main} />
-          </View>
-          <Text style={styles.headerTitle}>{title}</Text>
-          <TouchableOpacity>
-            <Bell size={24} color={colors.text.secondary} />
-          </TouchableOpacity>
-        </View>
+      <TouchableOpacity style={styles.avatar}>
+        <Text style={styles.avatarText}>A</Text>
+      </TouchableOpacity>
+      <Text style={styles.logo}>Mintro</Text>
+      <TouchableOpacity style={styles.icon}>
+        <Ionicons name="chatbubble-outline" size={24} color={colors.white} />
+      </TouchableOpacity>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   header: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: spacing.lg,
-      backgroundColor: colors.background.main,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
-      marginBottom: spacing.md,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-    },
-    logoContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.sm,
-    },
-    headerTitle: {
-      fontFamily: "Poppins-SemiBold",
-      fontSize: 20,
-      color: colors.text.primary,
-    }
-  }
-)
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 50, // Ajuste para a barra de status
+    paddingBottom: 15,
+    backgroundColor: colors.primaryGreen,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.lightGreen,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+   logo: {
+    fontSize: 24,
+    fontWeight: 'bold', 
+    color: colors.white,
+    fontFamily: 'Poppins_700Bold', 
+  },
+  avatarText: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold', 
+  },
+  icon: {
+    padding: 5,
+  },
+});
+
+export default Header;

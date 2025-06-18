@@ -3,29 +3,29 @@ import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import { colors } from '../../styles/colors';
-import { Home, User, Brain, Heart } from 'lucide-react-native';
+import { Brain, Heart, User } from 'lucide-react-native';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
-  
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.darkGray,
+        tabBarActiveTintColor: colors.lightGreen,
+        tabBarInactiveTintColor: colors.lightGrey,
         tabBarLabelStyle: {
           fontFamily: 'Poppins-Medium',
           fontSize: 12,
         },
         tabBarStyle: {
           height: 60 + (Platform.OS === 'ios' ? insets.bottom : 0),
-          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
+          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 8,
           backgroundColor: colors.white,
-          borderTopColor: colors.gray,
+          borderTopColor: colors.mediumGrey,
           borderTopWidth: 1,
           elevation: 8,
-          shadowColor: colors.black,
+          shadowColor: '0000',
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
           shadowRadius: 4,

@@ -12,15 +12,28 @@ class DiaryListView(ListAPIView):
     serializer_class = DiaryReadSerializer
 
     def get_queryset(self):
-        search = self.request.GET.get('search')
-        queryset = Diary.objects.filter(user=self.request.user)
+        user = self.request.user
+        search = self.request.GET.get("search")
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+
+        queryset = Diary.objects.filter(user=user)
+
         if search:
             queryset = queryset.filter(title__icontains=search)
-            
-        if not queryset:
-            raise NotFound("Diarios não encontrados.")
+
+        if month and year:
+            try:
+                month = int(month)
+                year = int(year)
+                queryset = queryset.filter(date__month=month, date__year=year)
+            except ValueError:
+                raise NotFound("Parâmetros de mês ou ano inválidos.")
+
+        if not queryset.exists():
+            raise NotFound("Diários não encontrados.")
         return queryset
-    
+
 class DiaryObjectView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = DiaryReadSerializer

@@ -1,208 +1,188 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Switch, TouchableOpacity } from 'react-native';
-import { Brain, Heart, Dumbbell, MailIcon, Calendar, User as UserIcon, Clock, BellIcon } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+// app/index.tsx
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextStyle, ViewStyle } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors } from '@/styles/colors'; 
 import Header from '@/components/Header';
-import StatCard from '@/components/StatCard';
-import InfoItem from '@/components/InfoItem';
+import StatCard from '@/components/StatsCard';
+import GoalCard from '@/components/GoalCard';
+import AchievementCard from '@/components/AchievementCard';
 
-export default function ProfileScreen() {
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  
+const ProfilePage: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Header title="Perfil" />
-      
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.profileContainer}>
-          <View style={styles.avatarContainer}>
-            <LinearGradient
-              colors={['#FFA500', '#FF4500']}
-              style={styles.avatarGradient}
-            >
-              <Image
-                source={{ uri: 'https://images.pexels.com/photos/6146931/pexels-photo-6146931.jpeg' }}
-                style={styles.avatarImage}
-              />
-            </LinearGradient>
+      <Header />
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* Seção de Informações do Usuário */}
+        <View style={styles.userInfoSection}>
+          <View style={styles.userInfoTextContainer}>
+            <Text style={styles.userName}>Alixandre</Text>
+            <Text style={styles.joinDate}>Entrou em 2024</Text>
+            <TouchableOpacity style={styles.editProfileButton}>
+              <Text style={styles.editProfileText}>Editar perfil</Text>
+            </TouchableOpacity>
           </View>
-          
-          <Text style={styles.name}>Alixandre de Oliveira</Text>
-        </View>
-        
-        <View style={styles.statsContainer}>
-          <StatCard 
-            icon={<Brain size={28} color="#000000" />}
-            value="42" 
-            label="Check-ins Mentais" 
-          />
-          <StatCard 
-            icon={<Heart size={28} color="#000000" />}
-            value="30" 
-            label="Check-ins Físicos" 
-          />
-        </View>
-        
-        <View style={styles.statsContainer}>
-          <StatCard 
-            icon={<Dumbbell size={28} color="#000000" />}
-            value="25" 
-            label="Exercícios" 
-          />
-          <StatCard 
-            icon={<View style={styles.lotusIcon}><Text>⛫</Text></View>}
-            value="18" 
-            label="Mindfulness" 
-          />
-        </View>
-        
-        <View style={styles.infoContainer}>
-          <InfoItem 
-            icon={<MailIcon size={20} color="#64748B" />}
-            text="joao.silva@email.com" 
-          />
-          <InfoItem 
-            icon={<Calendar size={20} color="#64748B" />}
-            text="15/03/1990" 
-          />
-          <InfoItem 
-            icon={<UserIcon size={20} color="#64748B" />}
-            text="Masculino" 
-          />
-          <InfoItem 
-            icon={<Clock size={20} color="#64748B" />}
-            text="Conta criada em 01/04/2025" 
-          />
-        </View>
-        
-        <View style={styles.notificationContainer}>
-          <View style={styles.notificationRow}>
-            <BellIcon size={20} color="#000000" />
-            <Text style={styles.notificationText}>Receber notificações</Text>
+          <View style={styles.userAvatarLarge}>
+            <Text style={styles.userAvatarLargeText}>A</Text>
           </View>
-          <Switch
-            value={notificationsEnabled}
-            onValueChange={setNotificationsEnabled}
-            trackColor={{ false: '#D1D5DB', true: '#A855F7' }}
-            thumbColor="#FFFFFF"
+        </View>
+
+        {/* Seção de Estatísticas */}
+        <Text style={styles.sectionTitle}>Estatísticas</Text>
+        <View style={styles.statisticsGrid}>
+          <StatCard
+            iconName="book-outline"
+            number="36"
+            description="Diários registrados"
+            type="journal"
+          />
+          <StatCard
+            iconName="headset-outline"
+            number="18"
+            description="Sessões de Mindfulness"
+            type="mindfulness"
+          />
+          <StatCard
+            iconName="barbell-outline"
+            number="24"
+            description="Exercícios físicos"
+            type="exercise"
           />
         </View>
-        
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.editButton}>
-            <Text style={styles.editButtonText}>Editar Perfil</Text>
+
+        {/* Seção Minhas Metas */}
+        <Text style={styles.sectionTitle}>Minhas Metas</Text>
+        <View style={styles.goalsGrid}>
+          <GoalCard
+            iconName="water-outline"
+            number="2"
+            description="Litros por dia"
+            type="water"
+          />
+          <GoalCard
+            iconName="calendar-outline"
+            number="3"
+            description="Dias na semana"
+            type="day"
+          />
+          <GoalCard
+            iconName="calendar-outline"
+            number="5"
+            description="Dias na semana"
+            type="day"
+          />
+        </View>
+
+        {/* Seção de Conquistas */}
+        <View style={styles.achievementsHeader}>
+          <Text style={styles.sectionTitle}>Conquistas</Text>
+          <TouchableOpacity>
+            <Text style={styles.textLink}>Mostrar todas</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.logoutButton}>
-            <Text style={styles.logoutButtonText}>Sair da Conta</Text>
-          </TouchableOpacity>
+        </View>
+        <View style={styles.achievementGrid}>
+          <AchievementCard
+            iconName="trophy-outline"
+            title="Diário Ativo"
+            description="15 dias consecutivos escrevendo"
+            type="journal"
+          />
+          <AchievementCard
+            iconName="barbell-outline"
+            title="Mente Equi"
+            description="10 sessões mindfuine"
+            type="mindfulness"
+          />
         </View>
       </ScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4FA',
+    backgroundColor: colors.white,
   },
-  scrollView: {
-    flex: 1,
+  scrollViewContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
   },
-  profileContainer: {
+  userInfoSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 24,
+    marginBottom: 30,
   },
-  avatarContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    overflow: 'hidden',
-    marginBottom: 16,
+  userInfoTextContainer: {
+    flex: 1,
   },
-  avatarGradient: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 60,
-  },
-  name: {
+  userName: {
     fontSize: 24,
-    fontFamily: 'Poppins-SemiBold',
-    color: '#000000',
+    fontWeight: 'bold',
+    color: colors.darkGrey,
   },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    marginBottom: 16,
+  joinDate: {
+    fontSize: 14,
+    color: colors.mediumGrey,
+    marginTop: 5,
   },
-  infoContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 8,
-    marginBottom: 16,
+  editProfileButton: {
+    marginTop: 10,
   },
-  notificationContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  notificationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  notificationText: {
-    marginLeft: 12,
+  editProfileText: {
+    color: colors.textLink,
     fontSize: 16,
-    fontFamily: 'Poppins-Regular',
-    color: '#000000',
   },
-  buttonsContainer: {
-    marginHorizontal: 16,
-    marginBottom: 40,
-  },
-  editButton: {
-    backgroundColor: '#A855F7',
-    borderRadius: 16,
-    height: 56,
+  userAvatarLarge: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: colors.lightGreen,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginLeft: 20,
   },
-  editButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontFamily: 'Poppins-Medium',
+  userAvatarLargeText: {
+    color: colors.white,
+    fontSize: 30,
+    fontWeight: 'bold',
   },
-  logoutButton: {
-    backgroundColor: '#DC2626',
-    borderRadius: 16,
-    height: 56,
-    justifyContent: 'center',
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.darkGrey,
+    marginBottom: 15,
+    marginTop: 20,
+  },
+  statisticsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  goalsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  achievementsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 15,
   },
-  logoutButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontFamily: 'Poppins-Medium',
+  achievementGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
-  lotusIcon: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  textLink: {
+    color: colors.textLink,
+    fontSize: 14,
   },
 });
+
+export default ProfilePage;
