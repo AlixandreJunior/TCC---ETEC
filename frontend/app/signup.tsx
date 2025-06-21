@@ -1,6 +1,9 @@
-import { SignupScreen } from '@/screens/SignUp';
-import React from 'react';
+import SignUpScreen from "@/screens/SingUpScreen"
 
-export default function Signup() {
-  return <SignupScreen/>;
+const SignUp = () => {
+  return(
+    <SignUpScreen/>
+  )
 }
+
+export default SignUp

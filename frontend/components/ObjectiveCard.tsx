@@ -1,67 +1,60 @@
-// src/components/ObjectiveCard.tsx
+// components/ObjectiveCard.tsx
 import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors } from '@/styles/colors'; 
+import { View, Text, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import FormCard from './FormCard'; // Reutilizando FormCard
 
 interface ObjectiveCardProps {
-  objectiveText: string;
+  objectiveName: string;
   sequence: number;
+  isCompleted?: boolean;
 }
 
-const ObjectiveCard: React.FC<ObjectiveCardProps> = ({ objectiveText, sequence }) => {
+export default function ObjectiveCard({
+  objectiveName,
+  sequence,
+  isCompleted = false,
+}: ObjectiveCardProps): React.JSX.Element {
   return (
-    <View style={styles.card}>
-      <View style={styles.iconWrapper}>
-        <Ionicons name="checkmark-circle" size={30} color={colors.moodExcellent} />
+    <FormCard style={styles.objectiveCard}>
+      <View style={styles.content}>
+        <MaterialCommunityIcons
+          name={isCompleted ? 'check-circle' : 'checkbox-blank-circle-outline'}
+          size={24}
+          color={isCompleted ? '#8BC34A' : '#7F8C8D'}
+          style={styles.icon}
+        />
+        <MaterialCommunityIcons name="book-open-outline" size={24} color="#2C3E50" style={styles.icon} />
+        <View>
+          <Text style={styles.objectiveName}>{objectiveName}</Text>
+          <Text style={styles.sequenceText}>Sequência de {sequence} dias</Text>
+        </View>
       </View>
-      <Ionicons name="book-outline" size={24} color={colors.darkGrey} style={styles.bookIcon} />
-      <View style={styles.textContainer}>
-        <Text style={styles.objectiveText}>{objectiveText}</Text>
-        <Text style={styles.sequenceText}>Sequencia de {sequence} dias</Text>
-      </View>
-    </View>
+    </FormCard>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  card: {
+  objectiveCard: {
+    marginHorizontal: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  content: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
-    borderRadius: 15,
-    padding: 15,
-    marginHorizontal: 20,
-    marginTop: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-    borderWidth: 1, // Borda leve para destacar
-    borderColor: colors.borderColor,
   },
-  iconWrapper: {
+  icon: {
     marginRight: 10,
   },
-  bookIcon: {
-    marginRight: 10,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  objectiveText: {
+  objectiveName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.darkGrey,
-    fontFamily: 'Poppins_600SemiBold',
+    color: '#2C3E50',
   },
   sequenceText: {
-    fontSize: 12,
-    color: colors.mediumGrey,
-    marginTop: 2,
-    fontFamily: 'Poppins_400Regular',
+    fontSize: 14,
+    color: '#7F8C8D',
   },
 });
-
-export default ObjectiveCard;
