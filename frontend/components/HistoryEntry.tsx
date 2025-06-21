@@ -38,7 +38,7 @@ export default function HistoryEntry({
   return (
     <View style={styles.entryContainer}>
       <View style={styles.timelineColumn}>
-        <MaterialCommunityIcons name={name} size={30} color={color} style={styles.sentimentIcon} />
+        <MaterialCommunityIcons name={'abacus'} size={30} color={color} style={styles.sentimentIcon} />
         {!isLast && <View style={styles.dottedLine} />}
       </View>
       <View style={styles.contentColumn}>

@@ -1,9 +1,5 @@
-import SignUpScreen from "@/screens/SingUpScreen"
+import SignUpScreen from "@/screens/EntryPages/SingUpScreen"
 
-const SignUp = () => {
-  return(
-    <SignUpScreen/>
-  )
+export default function SignUp() {
+  return <SignUpScreen/>;
 }
-
-export default SignUp
