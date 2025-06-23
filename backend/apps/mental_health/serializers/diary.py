@@ -22,6 +22,7 @@ class DiaryReadSerializer(serializers.ModelSerializer):
             'activities',
             'photo',
         ]
+        ordering=['-datetime', ]
 
 class DiaryWriteSerializer(serializers.ModelSerializer):
     activity = serializers.PrimaryKeyRelatedField(

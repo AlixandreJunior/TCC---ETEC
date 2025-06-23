@@ -1,4 +1,5 @@
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 from apps.user.models import User
 
@@ -31,3 +32,25 @@ class Diary(models.Model):
 
     def __str__(self):
         return f"Diário de {self.user.username} em {self.datetime.strftime('%d/%m/%Y')}"
+
+
+@receiver(models.signals.post_migrate)
+def create_default_activities(sender, app_config, **kwargs):
+    default_activities = [
+        "Família",
+        "Amigos",
+        "Encontro",
+        "Atividade Física",
+        "Esporte",
+        "Dormir Cedo",
+        "Alimentação Saudável",
+        "Descanso",
+        "Filmes",
+        "Ler",
+        "Jogos",
+        "Compras",
+        "Trabalho",
+    ]
+
+    for activity_name in default_activities:
+        Activity.objects.get_or_create(name=activity_name)

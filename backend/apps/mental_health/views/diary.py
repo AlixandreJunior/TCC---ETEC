@@ -26,7 +26,7 @@ class DiaryListView(ListAPIView):
             try:
                 month = int(month)
                 year = int(year)
-                queryset = queryset.filter(date__month=month, date__year=year)
+                queryset = queryset.filter(datetime__month=month, datetime__year=year).order_by('-datetime')
             except ValueError:
                 raise NotFound("Parâmetros de mês ou ano inválidos.")
 

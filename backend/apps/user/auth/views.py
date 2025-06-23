@@ -29,7 +29,6 @@ class LoginView(mixins.CreateModelMixin, GenericAPIView):
         }, status=status.HTTP_200_OK)
 
 
-# Refresh Token View
 class RefreshView(GenericAPIView):
     permission_classes = [permissions.AllowAny]
 
