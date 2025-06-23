@@ -4,8 +4,19 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
 
-from apps.mental_health.serializers.diary import DiaryReadSerializer, DiaryWriteSerializer
-from apps.mental_health.models.diary import Diary
+from apps.mental_health.serializers.diary import DiaryReadSerializer, DiaryWriteSerializer, ActivitySerializer
+from apps.mental_health.models.diary import Diary, Activity
+
+class ActivitiesListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ActivitySerializer
+
+    def get_queryset(self):
+        queryset = Activity.objects.all()
+
+        if not queryset.exists():
+            raise NotFound("Atividades não encontradas.")
+        return queryset
 
 class DiaryListView(ListAPIView):
     permission_classes = [IsAuthenticated]

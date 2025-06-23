@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+// screens/CreateDiaryScreen.tsx
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Platform } from 'react-native';
 import { Appbar, TextInput, Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+
+// Assuming these are correctly imported and available
+import { getActivities } from '@/services/diary/listActivities';
+import { getActivityIconName } from '@/utils/activityIconMapper';
+import { Activity } from '@/types/mental/diary';
+
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { ViewStyle } from 'react-native/types'; // Correctly import ViewStyle
 
 const { width } = Dimensions.get('window');
 const GRID_ITEM_MARGIN = 8;
 const GRID_ITEM_WIDTH_BASE = 80;
 
-// Tipagem para os sentimentos
-type SentimentType = 'Excelente' | 'Bem' | 'Neutro' | 'Mal' | 'Horrível';
+type SentimentType = 'Excelente' | 'Bom' | 'Neutro' | 'Mal' | 'Horrível';
 
 interface SentimentOptionProps {
   label: SentimentType;
@@ -21,16 +30,16 @@ const getSentimentIconName = (sentiment: SentimentType) => {
   switch (sentiment) {
     case 'Excelente':
       return 'emoticon-excited-outline';
-    case 'Bem':
-      return 'emoticon-happy-outline';
+    case 'Bom':
+    return 'emoticon-happy-outline';
     case 'Neutro':
-      return 'emoticon-neutral-outline';
+    return 'emoticon-neutral-outline';
     case 'Mal':
-      return 'emoticon-sad-outline';
+    return 'emoticon-sad-outline';
     case 'Horrível':
-      return 'emoticon-angry-outline';
+    return 'emoticon-angry-outline';
     default:
-      return 'emoticon-neutral-outline';
+    return 'emoticon-neutral-outline';
   }
 };
 
@@ -56,11 +65,12 @@ const SentimentOption: React.FC<SentimentOptionProps> = ({ label, isSelected, on
 
 interface ActivityGridItemProps {
   label: string;
+  iconName: keyof typeof MaterialCommunityIcons.glyphMap;
   isSelected: boolean;
   onPress: () => void;
 }
 
-const ActivityGridItem: React.FC<ActivityGridItemProps> = ({ label, isSelected, onPress }) => {
+const ActivityGridItem: React.FC<ActivityGridItemProps> = ({ label, iconName, isSelected, onPress }) => {
   const iconColor = isSelected ? 'white' : '#333';
   return (
     <TouchableOpacity
@@ -70,7 +80,7 @@ const ActivityGridItem: React.FC<ActivityGridItemProps> = ({ label, isSelected, 
       ]}
       onPress={onPress}
     >
-      <MaterialCommunityIcons name="book-open-outline" size={32} color={iconColor} />
+      <MaterialCommunityIcons name={iconName} size={32} color={iconColor} />
       <Text style={[styles.activityLabel, isSelected ? styles.activityLabelSelected : null]}>
         {label}
       </Text>
@@ -78,56 +88,95 @@ const ActivityGridItem: React.FC<ActivityGridItemProps> = ({ label, isSelected, 
   );
 };
 
-interface CreateDiaryScreenProps {}
+interface CreateDiaryScreenProps { }
 
 const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
   const [title, setTitle] = useState<string>('');
-  const [date, setDate] = useState<string>('Ontem, 18 de junho');
-  const [time, setTime] = useState<string>('8:16');
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedTime, setSelectedTime] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
   const [selectedSentiment, setSelectedSentiment] = useState<SentimentType | null>(null);
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+  const [selectedActivitiesIds, setSelectedActivitiesIds] = useState<string[]>([]);
   const [notes, setNotes] = useState<string>('');
 
-  const sentiments: SentimentType[] = ['Excelente', 'Bem', 'Neutro', 'Mal', 'Horrível'];
-  const activities = [
-    { id: 'ler', label: 'Ler' },
-    { id: 'escrever', label: 'Escrever' },
-    { id: 'meditar', label: 'Meditar' },
-    { id: 'correr', label: 'Correr' },
-    { id: 'caminhar', label: 'Caminhar' },
-    { id: 'nadar', label: 'Nadar' },
-    { id: 'estudar', label: 'Estudar' },
-    { id: 'cozinhar', label: 'Cozinhar' },
-    { id: 'dormir', label: 'Dormir' },
-    { id: 'hidratar', label: 'Hidratar' },
-    { id: 'exercitar', label: 'Exercitar' },
-    { id: 'yoga', label: 'Yoga' },
-    { id: 'alongar', label: 'Alongar' },
-  ];
+  const [fetchedActivities, setFetchedActivities] = useState<Activity[]>([]);
+  const [loadingActivities, setLoadingActivities] = useState<boolean>(true);
+  const [errorActivities, setErrorActivities] = useState<string | null>(null);
+
+  const sentiments: SentimentType[] = ['Excelente', 'Bom', 'Neutro', 'Mal', 'Horrível'];
+
+  useEffect(() => {
+    const fetchActivitiesData = async () => {
+      setLoadingActivities(true);
+      setErrorActivities(null);
+      try {
+        const data = await getActivities();
+        setFetchedActivities(data);
+      } catch (err: any) {
+        setErrorActivities(err.message || 'Falha ao carregar atividades.');
+        console.error('Erro ao buscar atividades:', err);
+      } finally {
+        setLoadingActivities(false);
+      }
+    };
+
+    fetchActivitiesData();
+  }, []);
 
   const toggleActivity = (activityId: string) => {
-    setSelectedActivities(prev =>
+    setSelectedActivitiesIds(prev =>
       prev.includes(activityId)
         ? prev.filter(id => id !== activityId)
         : [...prev, activityId]
     );
   };
 
+  const onChangeDate = (event: any, date?: Date) => {
+    // Hide the picker on both platforms after selection or cancellation
+    setShowDatePicker(false);
+    if (date) { // Only update if a date was actually selected
+      setSelectedDate(date);
+    }
+  };
+
+  const onChangeTime = (event: any, time?: Date) => {
+    setShowTimePicker(false);
+    if (time) { // Only update if a time was actually selected
+      setSelectedTime(time);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    // Format: "Terça-feira, 23 de junho" (adjust year if needed or remove for simplicity)
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+    return date.toLocaleDateString('pt-BR', options);
+  };
+
+  const formatTime = (date: Date) => {
+    // Format: "HH:MM"
+    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+
   const handleSave = () => {
     console.log('Novo Diário:', {
       title,
-      date,
-      time,
+      selectedDate: selectedDate.toISOString(),
+      selectedTime: selectedTime.toTimeString(),
       selectedSentiment,
-      selectedActivities,
+      selectedActivitiesIds,
       notes,
     });
+    // In a real app, you would typically save this data to a database or API
+    // and then navigate back or show a success message.
+    // router.back();
   };
 
   return (
     <View style={styles.container}>
       <Appbar.Header style={styles.appbar}>
-        <Appbar.BackAction onPress={() => router.push('/(tabs)/mental')} />
+        <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title="Novo Diário" titleStyle={styles.appbarTitle} />
         <Appbar.Action
           icon={() => <Text style={styles.mintrLogo}>Mintr💧</Text>}
@@ -144,20 +193,46 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
             value={title}
             onChangeText={setTitle}
             style={styles.textInput}
+            outlineStyle={styles.textInputOutline as ViewStyle}
           />
         </View>
 
-        <View>
-          <TouchableOpacity style={styles.dateTimeButton} onPress={() => console.log('Abrir Date Picker')}>
+        <View style={styles.dateTimeContainer}>
+          {/* Date Picker Button */}
+          <TouchableOpacity style={styles.dateTimeButton} onPress={() => setShowDatePicker(true)}>
             <MaterialCommunityIcons name="calendar-month-outline" size={24} color="#666" />
-            <Text style={styles.dateTimeText}>{date}</Text>
+            <Text style={styles.dateTimeText}>{formatDate(selectedDate)}</Text>
             <MaterialCommunityIcons name="chevron-down" size={24} color="#666" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.dateTimeButton} onPress={() => console.log('Abrir Time Picker')}>
+          {/* Date Picker Modal/Component - Only render if showDatePicker is true */}
+          {showDatePicker && (
+            <DateTimePicker
+              testID="datePicker"
+              value={selectedDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={onChangeDate}
+            />
+          )}
+
+          {/* Time Picker Button */}
+          <TouchableOpacity style={styles.dateTimeButton} onPress={() => setShowTimePicker(true)}>
             <MaterialCommunityIcons name="clock-outline" size={24} color="#666" />
-            <Text style={styles.dateTimeText}>{time}</Text>
+            <Text style={styles.dateTimeText}>{formatTime(selectedTime)}</Text>
             <MaterialCommunityIcons name="chevron-down" size={24} color="#666" />
           </TouchableOpacity>
+          {/* Time Picker Modal/Component - Only render if showTimePicker is true */}
+          {showTimePicker && (
+            <DateTimePicker
+              testID="timePicker"
+              value={selectedTime}
+              mode="time"
+              is24Hour={true} // Use 24-hour format
+              // Use 'spinner' for a wheel picker on iOS, 'default' for standard native picker on Android
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={onChangeTime}
+            />
+          )}
         </View>
 
         <View style={styles.section}>
@@ -176,16 +251,25 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>O que você tem feito?</Text>
-          <View style={styles.activityGrid}>
-            {activities.map((activity) => (
-              <ActivityGridItem
-                key={activity.id}
-                label={activity.label}
-                isSelected={selectedActivities.includes(activity.id)}
-                onPress={() => toggleActivity(activity.id)}
-              />
-            ))}
-          </View>
+          {loadingActivities ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : errorActivities ? (
+            <Text>Erro ao carregar atividades: {errorActivities}</Text>
+          ) : fetchedActivities.length === 0 ? (
+            <Text>Nenhuma atividade encontrada.</Text>
+          ) : (
+            <View style={styles.activityGrid}>
+              {fetchedActivities.map((activity) => (
+                <ActivityGridItem
+                  key={activity.id}
+                  label={activity.name}
+                  iconName={getActivityIconName(activity.name)}
+                  isSelected={selectedActivitiesIds.includes(activity.id)}
+                  onPress={() => toggleActivity(activity.id)}
+                />
+              ))}
+            </View>
+          )}
         </View>
 
         <View style={styles.section}>
@@ -209,6 +293,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
             multiline
             numberOfLines={4}
             style={[styles.textInput, styles.notesInput]}
+            outlineStyle={styles.textInputOutline as ViewStyle}
           />
         </View>
 
@@ -267,6 +352,12 @@ const styles = StyleSheet.create({
   textInputOutline: {
     borderRadius: 8,
     borderColor: '#e0e0e0',
+  } as ViewStyle,
+  dateTimeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 16,
+    marginTop: 20,
   },
   dateTimeButton: {
     flexDirection: 'row',

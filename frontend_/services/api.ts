@@ -30,7 +30,7 @@ api.interceptors.request.use(async (config: AxiosRequestConfig) => {
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => { 
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }; // Tipagem mais precisa para originalRequest
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }; 
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; 
@@ -57,10 +57,10 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return api(originalRequest);
-      } catch (refreshError: any) { // Captura erros durante o processo de refresh
+      } catch (refreshError: any) { 
         console.warn('Erro ao tentar renovar token:', refreshError.response?.data || refreshError.message);
         await clearTokens()
-        return Promise.reject(refreshError); // Rejeita o erro de refresh
+        return Promise.reject(refreshError);
       }
     }
 

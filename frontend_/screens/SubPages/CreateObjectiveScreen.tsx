@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from
 import { Appbar, Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import Header from '@/components/Header';
 
 const { width } = Dimensions.get('window');
 const ITEM_MARGIN = 8;
@@ -81,20 +82,11 @@ const CreateObjectiveScreen: React.FC<CreateObjectiveScreenProps> = () => {
   const handleSave = () => {
     console.log('Objetivo Selecionado:', selectedObjective);
     console.log('Período Selecionado:', selectedPeriod);
-    // Lógica para salvar o objetivo
   };
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.appbar}>
-        <Appbar.BackAction onPress={() => router.push('/(tabs)/mental')} />
-        <Appbar.Content title="Criar Objetivo" titleStyle={styles.appbarTitle} />
-        <Appbar.Action
-          icon={() => <Text style={styles.mintrLogo}>Mintr💧</Text>}
-          onPress={() => console.log('Mintr Logo Clicado')}
-        />
-        <Appbar.Action icon="check" color="green" onPress={handleSave} />
-      </Appbar.Header>
+      <Header avatarChar='A'/>
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.section}>

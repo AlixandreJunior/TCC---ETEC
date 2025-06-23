@@ -12,4 +12,6 @@ urlpatterns = [
     path('mindfulness/', mindfulness.MindfulnessListView.as_view(), name='mindfulness_list'),#
     path('mindfulness/log/', mindfulness.MindfulnessLogListView.as_view(), name='mindfulness_log_list'),#
     path('mindfulness/log/register/', mindfulness.MindfulnessLogRegisterView.as_view(), name='mindfulness_log_register'),#
+
+    path('activities', diary.ActivitiesListView.as_view(), name='activities')
 ]

@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from django.utils import timezone
 from apps.progress.models.objetives import Objective
+from apps.mental_health.serializers.diary import ActivitySerializer
 
 class ObjectiveSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    activity = ActivitySerializer()
 
     class Meta:
         model = Objective
