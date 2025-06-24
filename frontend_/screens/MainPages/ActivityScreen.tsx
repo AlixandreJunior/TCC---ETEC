@@ -29,8 +29,8 @@ export default function HealthScreen() {
   }
 
   const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"]
-  const exerciseDays = [false, false, false, false, true, false, false] // Apenas quinta-feira marcada
-  const mindfulnessDays = [false, true, true, true, true, true, true] // Todos os dias exceto domingo
+  const exerciseDays = [false, false, false, false, true, false, false] 
+  const mindfulnessDays = [false, true, true, true, true, true, true] 
 
   return (
     <SafeAreaView style={styles.container}>

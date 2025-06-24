@@ -1,5 +1,5 @@
 export interface Activity{
-    id: string
+    id: number
     name: string
 }
 
@@ -13,5 +13,14 @@ export interface Diary{
     datetime: Date
     mood: MoodType
     activities: Activity[]
+    photo?: string
+}
+
+export interface DiaryWrite{
+    title: string
+    content: string
+    datetime: Date
+    mood: MoodType
+    activities: number[]
     photo?: string
 }

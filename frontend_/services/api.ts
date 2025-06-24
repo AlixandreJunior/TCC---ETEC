@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig, AxiosError } from 'axios'; // Adicionando tipos Axios
+import axios, { AxiosRequestConfig, AxiosError } from 'axios'; 
 import { clearTokens, getToken, getRefreshToken, saveToken } from '../stores/authStore';
 
-const apiUrl = 'http://localhost:8000/api/'; // Lembre-se de usar seu IP local real aqui se estiver em um dispositivo/emulador!
+const apiUrl = 'http://192.168.1.10:8000/api/'; 
 
 const api = axios.create({
   baseURL: apiUrl,
@@ -14,7 +14,6 @@ const api = axios.create({
 api.interceptors.request.use(async (config: AxiosRequestConfig) => {
   try {
     const token = await getToken();
-    console.log(token)
     if (token) {
       if (!config.headers) {
         config.headers = {};
