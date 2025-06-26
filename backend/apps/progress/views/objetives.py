@@ -4,12 +4,12 @@ from rest_framework.exceptions import NotFound
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from apps.progress.serializers.objetives import ObjectiveSerializer
+from apps.progress.serializers.objetives import ObjectiveReadSerializer, ObjectiveWriteSerializer
 from apps.progress.models.objetives import Objective
 
 class ObjectiveListView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ObjectiveSerializer
+    serializer_class = ObjectiveReadSerializer
     
     def get_queryset(self):
         queryset = Objective.objects.filter(user = self.request.user)
@@ -24,7 +24,7 @@ class ObjectiveListView(ListAPIView):
 
 class ObjectiveCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ObjectiveSerializer
+    serializer_class = ObjectiveWriteSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

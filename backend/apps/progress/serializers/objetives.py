@@ -1,15 +1,25 @@
 from rest_framework import serializers
 from django.utils import timezone
 from apps.progress.models.objetives import Objective
+from apps.mental_health.models.diary import Activity
 from apps.mental_health.serializers.diary import ActivitySerializer
 
-class ObjectiveSerializer(serializers.ModelSerializer):
+class ObjectiveReadSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    activity = ActivitySerializer()
+    activity = ActivitySerializer(read_only=True)
 
     class Meta:
         model = Objective
-        fields = ['id','user','activity','period','deadline','created_at',]
+        fields = ['id', 'user', 'activity', 'period', 'deadline', 'created_at']
+
+
+class ObjectiveWriteSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    activity = serializers.PrimaryKeyRelatedField(queryset=Activity.objects.all())
+
+    class Meta:
+        model = Objective
+        fields = ['id', 'user', 'activity', 'period', 'deadline', 'created_at']
         read_only_fields = ['deadline', 'created_at']
 
     def validate(self, attrs):
@@ -19,7 +29,7 @@ class ObjectiveSerializer(serializers.ModelSerializer):
         current_objectives = Objective.objects.filter(user=user)
 
         if current_objectives.count() >= 3:
-            raise serializers.ValidationError({"activity":"Você só pode ter no máximo 3 objetivos ativos."})
+            raise serializers.ValidationError({"activity": "Você só pode ter no máximo 3 objetivos ativos."})
 
         if current_objectives.filter(activity=activity).exists():
             raise serializers.ValidationError({"activity": "Você já possui um objetivo com essa atividade."})
@@ -28,8 +38,8 @@ class ObjectiveSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         period = validated_data.get('period')
-
         now = timezone.now()
+
         if period == Objective.PeriodChoices.ONE_WEEK:
             deadline = now + timezone.timedelta(weeks=1)
         elif period == Objective.PeriodChoices.TWO_WEEKS:

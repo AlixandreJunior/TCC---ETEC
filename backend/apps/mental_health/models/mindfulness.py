@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from django.dispatch import receiver
-from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.user.models import User
 
 class Mindfulness(models.Model):
@@ -34,3 +33,19 @@ class MindfulnessLog(models.Model):
 
     def __str__(self):
         return f"Registro de Midnfullnes de {self.user.username} em {self.created_at}"
+    
+
+@receiver(models.signals.post_migrate)
+def create_default_mindfulness(sender, **kwargs):
+    default_mindfulness = [
+        {'name': 'Meditação Guiada'},
+        {'name': 'Respiração Consciente'},
+        {'name': 'Body Scan'},
+        {'name': 'Atenção Plena'},
+        {'name': 'Relaxamento Muscular'},
+    ]
+
+    for item in default_mindfulness:
+        Mindfulness.objects.get_or_create(
+            name=item['name'],
+        )

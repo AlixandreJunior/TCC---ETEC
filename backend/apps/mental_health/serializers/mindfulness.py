@@ -17,4 +17,4 @@ class MindfulnessLogReadSerializer(serializers.ModelSerializer):
 class MindfulnessLogWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = MindfulnessLog
-        fields = ['mindfulness', 'duration', 'description', 'datetime']
+        fields = ['mindfulness', 'duration', 'datetime']

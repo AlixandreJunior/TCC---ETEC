@@ -1,4 +1,5 @@
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 from apps.user.models import User
 
@@ -34,3 +35,25 @@ class ExerciseLog(models.Model):
 
     def __str__(self):
         return f"Registro de Exercircio de {self.user.username}"
+    
+
+@receiver(models.signals.post_migrate)
+def create_default_exercises(sender, **kwargs):
+    default_exercises = [
+        {'name': 'Corrida', 'type': Exercise.TypeChoices.AEROBICO, 'is_distance': True},
+        {'name': 'Caminhada', 'type': Exercise.TypeChoices.AEROBICO, 'is_distance': True},
+        {'name': 'Treino', 'type': Exercise.TypeChoices.FORCA, 'is_distance': False},
+        {'name': 'Natação', 'type': Exercise.TypeChoices.AEROBICO, 'is_distance': True},
+        {'name': 'Bicicleta', 'type': Exercise.TypeChoices.AEROBICO, 'is_distance': True},
+        {'name': 'Esporte', 'type': Exercise.TypeChoices.AEROBICO, 'is_distance': False},
+    ]
+
+    for exercise_data in default_exercises:
+        Exercise.objects.get_or_create(
+            name=exercise_data['name'],
+            defaults={
+                'type': exercise_data['type'],
+                'is_distance': exercise_data['is_distance']
+            }
+        )
+
