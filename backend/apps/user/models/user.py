@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import FileExtensionValidator, MinValueValidator,MaxValueValidator
 from django.dispatch import receiver
 from apps.user.models.goals import Goal
-
 import os
 
 class UsersManager(BaseUserManager):
@@ -28,11 +27,8 @@ class User(AbstractUser):
         verbose_name = "User"
         verbose_name_plural = "Users"
 
-    birth_date = models.DateField(null = True, blank=True)
-    gender = models.CharField(max_length=10,choices=[("Masculino" , 'Masculino'), ('Feminino', 'Feminino'), ("Outro", "Outro")])
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=False)
-    notifications = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     objects = UsersManager()
     groups = None

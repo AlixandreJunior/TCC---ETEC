@@ -1,5 +1,5 @@
 from rest_framework import status, permissions, mixins
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -26,11 +26,9 @@ class LoginView(mixins.CreateModelMixin, GenericAPIView):
         return Response({
             "access": str(refresh.access_token),
             "refresh": str(refresh),
-            "detail": "Login realizado com sucesso."
         }, status=status.HTTP_200_OK)
 
 
-# Refresh Token View
 class RefreshView(GenericAPIView):
     permission_classes = [permissions.AllowAny]
 
@@ -52,13 +50,10 @@ class RefreshView(GenericAPIView):
         except TokenError as e:
             return Response({"detail": f"Token inválido: {str(e)}"}, status=status.HTTP_401_UNAUTHORIZED)
 
-class LogoutView(mixins.DestroyModelMixin, GenericAPIView):
+class LogoutView(CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         refresh_token = request.data.get("refresh")
 
         if not refresh_token:

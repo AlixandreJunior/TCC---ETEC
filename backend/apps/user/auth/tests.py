@@ -39,11 +39,10 @@ class AuthTest(APITestCase, UserMixin):
         user = self.make_user_auth(username="testuser", email="test@email.com", password="SenhaForte321")
         refresh = RefreshToken.for_user(user)
 
-        # Autenticando com o access token
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {str(refresh.access_token)}")
 
         api_url = reverse('logout')
-        response = self.client.delete(api_url, data={"refresh": str(refresh)}, format='json')
+        response = self.client.post(api_url, data={"refresh": str(refresh)}, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["detail"], "Logout realizado com sucesso.")
@@ -51,7 +50,7 @@ class AuthTest(APITestCase, UserMixin):
     def test_logout_view_fail_for_unauthorized(self):
         """Logout sem autenticação"""
         api_url = reverse('logout')
-        response = self.client.delete(api_url)
+        response = self.client.post(api_url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
