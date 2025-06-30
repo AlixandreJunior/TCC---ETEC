@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { clearTokens, getToken, getRefreshToken, saveToken } from '../stores/authStore';
 import { router } from 'expo-router';
 
-const apiUrl = 'http://192.168.1.8:8000/api/'; 
+const apiUrl = 'http://192.168.1.7:8000/api/'; 
 
 const api = axios.create({
   baseURL: apiUrl,

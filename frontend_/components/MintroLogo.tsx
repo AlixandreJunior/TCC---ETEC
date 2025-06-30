@@ -1,32 +1,37 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 export default function MintroLogo(): React.JSX.Element {
   return (
-    <View style={styles.logoContainer}>
-      <Text style={styles.logoText}>Mintros</Text>
-      <View style={styles.plantIconPlaceholder} />
+    <View style={styles.header}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('@/assets/images/logosrobomintro.png')}
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  logoContainer: {
-    flexDirection: 'row',
+  header: {
     alignItems: 'center',
-    marginBottom: 40,
-    marginTop: -80, 
+    justifyContent: 'center',
+    paddingHorizontal: width * 0.05, 
+    paddingTop: height * 0.08,
+    paddingBottom: height * 0.02,
+    minHeight: height * 0.25, 
   },
-  logoText: {
-    fontSize: 42,
-    fontWeight: 'bold',
-    color: '#34495E',
-    marginRight: 8,
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  plantIconPlaceholder: {
-    width: 28,
-    height: 28,
-    backgroundColor: '#8BC34A',
-    borderRadius: 14,
+  logoImage: {
+    width: Math.min(width * 0.5, 200), 
+    height: Math.min(width * 0.5, 200), 
   },
 });

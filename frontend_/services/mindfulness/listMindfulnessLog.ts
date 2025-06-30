@@ -1,4 +1,3 @@
-// services/mindfulness/listLogsThisWeek.ts
 import api from '../api';
 import { MindfulnessLog } from '@/types/health/mindfulness';
 import { startOfWeek, endOfWeek, format } from "date-fns";
@@ -17,7 +16,6 @@ export const getMindfulnessList = async (date: Date = new Date()): Promise<Mindf
     });
     return response.data;
   } catch (error: any) {
-    // LOG o erro internamente, mas retorne um array vazio para o frontend
     console.log("Erro na API de Mindfulness:", error);
     return [];
   }

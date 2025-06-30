@@ -7,7 +7,6 @@ import ProgressCircle from "../../components/ProgressCircle";
 import { format, isSameWeek, startOfWeek, isSameDay } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 
-// Importe as interfaces e serviços da API
 import { MindfulnessLog } from '@/types/health/mindfulness';
 import { ExerciseLog } from '@/types/health/exercise';
 import { Hydratation } from '@/types/health/hydratation';

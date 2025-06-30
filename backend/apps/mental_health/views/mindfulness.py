@@ -30,10 +30,8 @@ class MindfulnessLogListView(ListAPIView):
     def get_queryset(self):
         queryset = MindfulnessLog.objects.filter(user = self.request.user)
         type = self.request.GET.get('type')
-
         if type:
             queryset = queryset.filter(mindfulness__type = type)
-
         if not queryset:
             raise NotFound("Registros de Mindfulness não encontrados.")
         return queryset
