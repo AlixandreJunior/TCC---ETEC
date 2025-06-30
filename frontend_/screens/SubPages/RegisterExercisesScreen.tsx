@@ -27,6 +27,8 @@ import {
   Poppins_700Bold
 } from '@expo-google-fonts/poppins'
 import { router } from 'expo-router'
+import { MainInput } from '@/components/Inputs/MainInput'
+import { DateTimeInput } from '@/components/Inputs/DateTimeInput'
 
 const RegisterExerciseScreen: React.FC = () => {
   const [exerciseList, setExerciseList] = useState<Exercise[]>([])
@@ -173,64 +175,45 @@ const RegisterExerciseScreen: React.FC = () => {
                     setMenuVisible(false);
                   }}
                   title={exercise.name}
-                  titleStyle={styles.menuItemText} // Estilo para o texto do item do menu
+                  titleStyle={styles.menuItemText} 
                 />
               ))}
             </Menu>
           )}
         </View>
+        
+        <DateTimeInput
+          labelText='Data'
+          datetime={datetime}
+          mode='date'
+          onChange={onChangeDate}
+          onPress={() => setShowDatePicker(true)}
+          showPicker={showDatePicker}
+        />
 
-        {/* Data */}
-        <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>Data</Text>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={[styles.textInputStyle, styles.pickerButton]}>
-            <Text style={styles.pickerButtonText}>{datetime.toLocaleDateString('pt-BR')}</Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker value={datetime} mode="date" display="default" onChange={onChangeDate} />
-          )}
-        </View>
+        <DateTimeInput
+          labelText='Hora'
+          datetime={datetime}
+          mode='time'
+          onChange={onChangeTime}
+          onPress={() => setShowTimePicker(true)}
+          showPicker={showTimePicker}
+        />
 
-        {/* Hora */}
-        <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>Hora</Text>
-          <TouchableOpacity onPress={() => setShowTimePicker(true)} style={[styles.textInputStyle, styles.pickerButton]}>
-            <Text style={styles.pickerButtonText}>{datetime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</Text>
-            {/* Ícone de relógio removido, se o design não o tem */}
-          </TouchableOpacity>
-          {showTimePicker && (
-            <DateTimePicker value={datetime} mode="time" display="default" onChange={onChangeTime} />
-          )}
-        </View>
+        <MainInput 
+          labelText='Duração (minutos)'
+          onChangeText={setDuration}
+          keyboardType='numeric'
+          value={duration}
+        />
 
-        {/* Duração */}
-        <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>Duração (minutos)</Text>
-          <TextInput
-            mode="outlined"
-            value={duration}
-            onChangeText={setDuration}
-            keyboardType="numeric"
-            style={styles.textInput}
-            outlineStyle={styles.textInputOutline as ViewStyle}
-            theme={{ fonts: { regular: { fontFamily: 'Poppins_400Regular' } } }} // Aplica fonte Poppins
-          />
-        </View>
-
-        {/* Distância */}
-        <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>Distância (km)</Text>
-          <TextInput
-            mode="outlined"
-            value={distance}
-            onChangeText={setDistance}
-            keyboardType="numeric"
-            placeholder="Opcional"
-            style={styles.textInput}
-            outlineStyle={styles.textInputOutline as ViewStyle}
-            theme={{ fonts: { regular: { fontFamily: 'Poppins_400Regular' } } }} // Aplica fonte Poppins
-          />
-        </View>
+        <MainInput 
+          labelText='Distância (km)'
+          onChangeText={setDistance}
+          keyboardType='numeric'
+          value={distance}
+          placeholder='Opcional'
+        />
 
         {loadingSave && (
           <View style={styles.savingOverlay}>

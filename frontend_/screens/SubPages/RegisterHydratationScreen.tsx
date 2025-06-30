@@ -61,7 +61,6 @@ const QuantityCounter: React.FC<QuantityCounterProps> = ({
         <Text style={styles.itemLabel}>{label}</Text>
         <Text style={styles.itemVolume}>{volume} ml</Text>
       </View>
-      {/* NOVO: Ajuste a ordem e os estilos do counterContainer e counterButton */}
       <View style={styles.counterContainer}>
         <Text style={styles.counterValue}>{quantity}</Text> {/* Move o valor para a esquerda */}
         <TouchableOpacity onPress={decrement} style={[styles.counterButton, styles.counterButton]}>

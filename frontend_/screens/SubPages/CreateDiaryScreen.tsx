@@ -13,7 +13,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { ViewStyle } from 'react-native/types';
 
 import NotesInput from '@/components/NotesInput';
-import PhotoPicker from '@/components/PhotoPicker';
+import PhotoPicker from '@/components/Inputs/PhotoPicker';
 
 import { Objective } from '@/types/mental/objectives';
 import { getObjectiveList } from '@/services/objectives/listObjectives';
