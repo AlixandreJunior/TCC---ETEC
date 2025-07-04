@@ -32,7 +32,7 @@ export const DateTimeInput: React.FC<DateTimeInputProps> = ({
         </TouchableOpacity>
         
         {showPicker && (
-        <DateTimePicker value={datetime} mode={mode} display="default" onChange={onChange} />
+        <DateTimePicker value={datetime} mode={mode} display="default" onChange={onChange} maximumDate={new Date()}/>
         )}
     </View>
     )

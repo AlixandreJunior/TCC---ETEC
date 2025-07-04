@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Appbar } from 'react-native-paper'; // Certifique-se de ter react-native-paper instalado
 import { router } from 'expo-router'; // Para a ação de voltar, se usar Expo Router
-import VerticalDotsIcon from './Icons/VerticalDotsIcon';
+import VerticalDotsIcon from '../Icons/VerticalDotsIcon';
 
 interface HeaderWithOptionsProps {
   title: string;

@@ -11,8 +11,8 @@ import { Mail, Lock } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { login } from '@/services/auth/login';
 import { saveToken } from '@/stores/authStore';
-import MintroLogo from '@/components/MintroLogo';
-import { EntryFormCard } from '@/components/EntryFormCard';
+import MintroLogo from '@/components/Layout/MintroLogo';
+import { EntryFormCard } from '@/components/Cards/EntryFormCard';
 import { EntryInput } from '@/components/Inputs/EntryInput';
 
 const { width, height } = Dimensions.get('window');

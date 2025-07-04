@@ -9,8 +9,8 @@ import {
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createAccount } from '@/services/user/createAccount';
-import MintroLogo from '@/components/MintroLogo';
-import { EntryFormCard } from '@/components/EntryFormCard';
+import MintroLogo from '@/components/Layout/MintroLogo';
+import { EntryFormCard } from '@/components/Cards/EntryFormCard';
 import { EntryInput } from '@/components/Inputs/EntryInput';
 import { Lock, Mail } from 'lucide-react-native';
 

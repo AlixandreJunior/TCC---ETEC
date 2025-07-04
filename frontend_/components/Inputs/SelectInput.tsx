@@ -1,23 +1,30 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { ActivityIndicator, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { ActivityIndicator, GestureResponderEvent, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import { Text, View } from "react-native";
 import { Menu } from "react-native-paper";
 
 interface SelectInputProps{
-
+  labelText: string
+  itemList: any[]
+  itemId: number | null
+  setItemId: ((id: number) => void)
 }
 
-export const SelectInput: React.FC<SelectInputProps> = (
-    {
-
-    }
-) => {
+export const SelectInput: React.FC<SelectInputProps> = ({
+    labelText,
+    itemList,
+    setItemId,
+    itemId
+}) => {
     const [menuVisible, setMenuVisible] = useState(false)
+    const [loadingItem, setLoadingItem] = useState(false);
     
+    const selectedItemName = itemList.find((item) => item.id === itemId)?.name || 'Selecione';
+
     return(
         <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>Exercício</Text>
+          <Text style={styles.inputLabel}>{labelText}</Text>
           {loadingItem ? (
             <ActivityIndicator animating size="small" color="#0000ff" />
           ) : (
@@ -92,5 +99,10 @@ const styles = StyleSheet.create(
     fontFamily: 'Poppins_400Regular',
     color: '#333', // Cor do texto
   },
-    }
+   menuItemText: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 16,
+    color: '#333',
+  }
+}
 )

@@ -1,36 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Platform, Alert, Image } from 'react-native';
-import { TextInput, Card } from 'react-native-paper'; // Card ainda é usado para ActivityGridItem
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-
 import { getActivities } from '@/services/diary/listActivities';
 import { getActivityIconName } from '@/utils/activityIconMapper';
 import { Activity, MoodType } from '@/types/mental/diary';
-
-// Corrected DateTimePicker import path
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { ViewStyle } from 'react-native/types';
-
-import NotesInput from '@/components/NotesInput';
+import NotesInput from '@/components/Inputs/NotesInput';
 import PhotoPicker from '@/components/Inputs/PhotoPicker';
-
 import { Objective } from '@/types/mental/objectives';
 import { getObjectiveList } from '@/services/objectives/listObjectives';
-import FormHeader from '@/components/FormHeader';
-import ObjectiveDisplayCard from '@/components/ObjectiveCard';
-import Header from '@/components/Header';
+import FormHeader from '@/components/Layout/FormHeader';
+import ObjectiveDisplayCard from '@/components/Cards/ObjectiveCard';
+import Header from '@/components/Layout/Header';
 import { createDiary } from '@/services/diary/createDiary';
-import { ActivityGrid } from '@/components/ActivityGrid'; // Keeping as it's imported, but not explicitly used in this file's JSX
 import { ActivityGridMultiples } from '@/components/ActivityGridMultiples';
+import { MainInput } from '@/components/Inputs/MainInput';
+import { DateTimeInput } from '@/components/Inputs/DateTimeInput';
 
-const { width } = Dimensions.get('window');
-const GRID_ITEM_MARGIN = 8;
-const GRID_ITEM_WIDTH_BASE = 80;
-
-interface CreateDiaryScreenProps { }
-
-const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
+const CreateDiaryScreen = () => {
   const [title, setTitle] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<Date>(new Date());
@@ -39,15 +25,11 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
   const [selectedSentiment, setSelectedSentiment] = useState<MoodType>('Neutro');
   const [selectedActivitiesIds, setSelectedActivitiesIds] = useState<number[]>([]);
   const [notes, setNotes] = useState<string>('');
-
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
-
   const [objectives, setObjectives] = useState<Objective[]>([]);
-
   const [fetchedActivities, setFetchedActivities] = useState<Activity[]>([]);
   const [loadingActivities, setLoadingActivities] = useState<boolean>(true);
   const [errorActivities, setErrorActivities] = useState<string | null>(null);
-
   const [loadingObjectives, setLoadingObjectives] = useState<boolean>(true);
   const [errorObjectives, setErrorObjectives] = useState<string | null>(null);
 
@@ -137,16 +119,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
-  const formatDate = (date: Date) => {
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-    return date.toLocaleDateString('pt-BR', options);
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  };
-
-  async function appendImageToFormData(formData: FormData, image: any) {
+  const appendImageToFormData = async (formData: FormData, image: any) => {
     if (!image) return;
 
     if (typeof window !== 'undefined' && window.document) {
@@ -259,49 +232,33 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
       <FormHeader title="Novo Diário" onBackPress={() => router.back()} onSavePress={handleSave} />
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.section}>
-          <TextInput
-            mode="outlined"
-            placeholder="Título"
-            value={title}
-            onChangeText={setTitle}
-            style={styles.textInput}
-            outlineStyle={styles.textInputOutline as ViewStyle}
-          />
-        </View>
+        <MainInput
+          labelText='Titulo'
+          keyboardType='default'
+          value={title}
+          onChangeText={setTitle}
+          placeholder='Título'
+        />
 
         <View style={styles.section}>
           <View style={styles.dateTimeContainer}>
-            <TouchableOpacity style={styles.dateTimeButton} onPress={() => setShowDatePicker(true)}>
-              <MaterialCommunityIcons name="calendar" size={20} color="#333" />
-              <Text style={styles.dateTimeText}>{formatDate(selectedDate)}</Text>
-            </TouchableOpacity>
+            <DateTimeInput
+              labelText='Data'
+              datetime={selectedDate}
+              onChange={onChangeDate}
+              showPicker={showDatePicker}
+              onPress={() => setShowDatePicker(true)}
+              mode='date'
+            />
 
-            {showDatePicker && (
-              <DateTimePicker
-                testID="datePicker"
-                value={selectedDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={onChangeDate}
-              />
-            )}
-
-            <TouchableOpacity style={styles.dateTimeButton} onPress={() => setShowTimePicker(true)}>
-              <MaterialCommunityIcons name="clock-outline" size={20} color="#333" />
-              <Text style={styles.dateTimeText}>{formatTime(selectedTime)}</Text>
-            </TouchableOpacity>
-
-            {showTimePicker && (
-              <DateTimePicker
-                testID="timePicker"
-                value={selectedTime}
-                mode="time"
-                is24Hour={true}
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={onChangeTime}
-              />
-            )}
+            <DateTimeInput
+              labelText='Hora'
+              datetime={selectedTime}
+              onChange={onChangeTime}
+              showPicker={showTimePicker}
+              onPress={() => setShowTimePicker(true)}
+              mode='time'
+            />
           </View>
         </View>
 
@@ -331,7 +288,7 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
 
         {loadingObjectives ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Objetivos</Text>
+            <Text style={styles.sectionTitle}>Objetivos</Text>+
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : errorObjectives ? (
@@ -366,19 +323,13 @@ const CreateDiaryScreen: React.FC<CreateDiaryScreenProps> = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollViewContent: {
-    paddingBottom: 20,
-    // Removed alignItems here; sections handle their own centering
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
+  scrollViewContent: { paddingBottom: 20 },
   section: {
-    paddingHorizontal: 12, // Adjusted padding for sections
+    paddingHorizontal: 12,
     marginTop: 10,
-    width: '90%', // Consistent width for sections
-    alignSelf: 'center', // Centers each section horizontally
+    width: '90%',
+    alignSelf: 'center',
   },
   sectionTitle: {
     fontSize: 14,
@@ -387,67 +338,15 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'left',
   },
-  inputSection: {
-    paddingHorizontal: 16, // This was redundant with 'section' padding; keeping for now, but consider removing if 'section' is sufficient.
-    marginTop: 20,
-  },
-  textInput: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-  },
-  textInputOutline: {
-    borderRadius: 8,
-    borderColor: '#e0e0e0',
-  } as ViewStyle,
   dateTimeContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Distributes date and time buttons
-    width: '100%', // Takes full width of its parent section
+    justifyContent: 'space-between',
+    width: '100%',
   },
-  dateTimeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    flex: 1, // Allow buttons to grow and fill space
-    marginHorizontal: 4, // Small margin between buttons
-  },
-  dateTimeText: {
-    fontSize: 16,
-    color: '#333',
-    marginHorizontal: 8,
-  },
-  // Removed sentimentRow, sentimentOption, sentimentOptionSelected, sentimentLabel, sentimentLabelSelected
   activityGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center', // Centers activity items, allowing wrap
-    // No horizontal padding here as the parent 'section' already handles it.
-  },
-  // Removed individual activityGridItem, activityGridItemSelected, activityLabel, activityLabelSelected
-  objectiveCard: {
-    borderRadius: 10,
-    backgroundColor: 'white',
-    padding: 15,
-  },
-  objectiveCardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  objectiveCardText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginLeft: 10,
-  },
-  objectiveCardSubText: {
-    fontSize: 14,
-    color: 'gray',
-    marginLeft: 5,
+    justifyContent: 'center',
   },
   errorText: {
     color: 'red',
@@ -469,7 +368,7 @@ const styles = StyleSheet.create({
   },
   moodOptionSelected: {
     backgroundColor: '#E0F2F1',
-    borderColor: '#4CAF50', // Added border color for selected state
+    borderColor: '#4CAF50',
   },
   moodIconContainer: {
     marginBottom: 8,
