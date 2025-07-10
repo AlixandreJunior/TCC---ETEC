@@ -1,65 +1,16 @@
-import { Stack, router, useSegments } from "expo-router";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-  Poppins_700Bold
+import React, { useEffect } from 'react';
+import { Slot, Stack } from 'expo-router';
+import { useFonts, 
+  Poppins_400Regular, 
+  Poppins_500Medium, 
+  Poppins_600SemiBold, 
+  Poppins_700Bold 
 } from '@expo-google-fonts/poppins';
-import { View, ActivityIndicator, StyleSheet } from "react-native";
-import { useEffect, useState } from 'react';
-import { getToken } from '../stores/authStore';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import AppProviders from '@/components/AppProviders';
+import AuthGuard from '@/components/AuthGuard';
+import * as NavigationBar from "expo-navigation-bar";
 
-function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [isAuthReady, setIsAuthReady] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const segments = useSegments();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = await getToken();
-        setIsAuthenticated(!!token);
-      } catch (e) {
-        console.error("Erro ao verificar token:", e);
-        setIsAuthenticated(false);
-      } finally {
-        setIsAuthReady(true);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  useEffect(() => {
-    if (!isAuthReady) return;
-
-    const segment = segments[0] || '';
-    const publicRoutes = ['login', 'signup', 'index'];
-
-    const isPublic = publicRoutes.includes(segment);
-
-    // Somente redireciona se estiver em rota errada
-    if (!isAuthenticated && !isPublic) {
-      router.replace('/login');
-    }
-
-    if (isAuthenticated && isPublic) {
-      router.replace('/(tabs)/mental');
-    }
-  }, [isAuthReady, isAuthenticated, segments]);
-
-  if (!isAuthReady) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  return <>{children}</>;
-}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -69,30 +20,29 @@ export default function RootLayout() {
     Poppins_700Bold,
   });
 
+  useEffect(() => {
+    async function setNavigationBar() {
+      await NavigationBar.setVisibilityAsync("hidden"); 
+      await NavigationBar.setBehaviorAsync('overlay-swipe');
+    }
+    setNavigationBar();
+  }, []);
+
+
   if (!fontsLoaded) {
     return (
-      <SafeAreaProvider>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" />
-        </View>
-      </SafeAreaProvider>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
     );
   }
 
   return (
-    <SafeAreaProvider>
+    <AppProviders>
       <AuthGuard>
-        <Stack screenOptions={{ headerShown: false }}>
-          {/* Rotas públicas */}
-          <Stack.Screen name="index" />
-          <Stack.Screen name="login" />
-          <Stack.Screen name="signup" />
-
-          {/* Rotas protegidas */}
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
+            <Slot/>
       </AuthGuard>
-    </SafeAreaProvider>
+    </AppProviders>
   );
 }
 

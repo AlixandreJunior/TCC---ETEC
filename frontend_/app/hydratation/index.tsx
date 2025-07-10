@@ -41,7 +41,7 @@ export default function HydrationScreen() {
   const progress = (totalHydrationToday / dailyGoal) * 100;
 
   const handleAddWater = () => {
-    router.push("/registerhydratation");
+    router.push("/hydratation/register");
   };
 
   useEffect(() => {

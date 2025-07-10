@@ -1,23 +1,26 @@
+import { Provider as PaperProvider } from 'react-native-paper';
 import React, { useEffect, useState } from "react"
 import {
-  TouchableOpacity,
-  ScrollView,
+  View,
   StyleSheet,
   SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import { startOfWeek, isSameDay, isSameWeek } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
-import type { ExerciseLog } from "@/types/health/exercise"
-import { getExerciseLogs } from "@/services/exercise/listExerciseLog"
+import type { MindfulnessLog } from "@/types/health/mindfulness"
+import { getMindfulnessList } from "@/services/mindfulness/listMindfulnessLog"
+
 import Header from "@/components/Layout/Header"
 import HeaderWithOptions from "@/components/Layout/HeaderWithOptions"
 import DateNavigator from "@/components/DateNavigator"
 import { SummarySection } from "@/components/SummarySection"
-import { WeekDaysContainer } from "@/components/WeekDaysContainer"
 import { ActivityHistorySection } from "@/components/ActivityHistorySection"
+import { WeekDaysContainer } from "@/components/WeekDaysContainer"
 
 interface WeekDayDisplay {
   id: string
@@ -26,16 +29,16 @@ interface WeekDayDisplay {
   exercised: boolean
 }
 
-const ExerciseActivityScreen: React.FC = () => {
+const MindfulnessActivityScreen: React.FC = () => {
   const [currentDisplayDate, setCurrentDisplayDate] = useState(new Date())
-  const [exerciseLogs, setExerciseLogs] = useState<ExerciseLog[]>([])
+  const [mindfulnessLogs, setMindfulnessLogs] = useState<MindfulnessLog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [weekDaysDisplay, setWeekDaysDisplay] = useState<WeekDayDisplay[]>([])
   const [fetchedWeekStartDate, setFetchedWeekStartDate] = useState<Date | null>(null)
 
   useEffect(() => {
-    const loadExerciseLogs = async () => {
+    const loadMindfulnessLogs = async () => {
       const startOfCurrentWeek = startOfWeek(currentDisplayDate, {
         weekStartsOn: 0,
         locale: ptBR,
@@ -54,13 +57,15 @@ const ExerciseActivityScreen: React.FC = () => {
       setLoading(true)
       setError(null)
       try {
-        const logs = await getExerciseLogs(currentDisplayDate)
-        const daysOfWeek = ["D", "S", "T", "Q", "Q", "S", "S"]
+        const logs = await getMindfulnessList(currentDisplayDate)
+
         const currentWeekDays: Date[] = [...Array(7)].map((_, i) => {
           const day = new Date(startOfCurrentWeek)
           day.setDate(startOfCurrentWeek.getDate() + i)
           return day
         })
+
+        const daysOfWeek = ["D", "S", "T", "Q", "Q", "S", "S"]
 
         const weekDaysData: WeekDayDisplay[] = currentWeekDays.map((day, index) => ({
           id: daysOfWeek[index],
@@ -69,70 +74,71 @@ const ExerciseActivityScreen: React.FC = () => {
           exercised: logs.some(log => isSameDay(new Date(log.datetime), day)),
         }))
 
-        setExerciseLogs(logs)
+        setMindfulnessLogs(logs)
         setWeekDaysDisplay(weekDaysData)
         setFetchedWeekStartDate(startOfCurrentWeek)
       } catch (err: any) {
-        setError(err.message || "Erro ao carregar registros de exercício.")
-        console.error("Error loading exercise logs:", err)
-        setExerciseLogs([])
+        setError(err.message || "Erro ao carregar registros de mindfulness.")
+        console.error("Error loading mindfulness logs:", err)
+        setMindfulnessLogs([])
       } finally {
         setLoading(false)
       }
     }
 
-    loadExerciseLogs()
+    loadMindfulnessLogs()
   }, [currentDisplayDate, fetchedWeekStartDate])
 
   const completedDays = weekDaysDisplay.filter(d => d.exercised).length
-  const totalExercises = exerciseLogs.length
+  const totalLogs = mindfulnessLogs.length
 
   const handleBack = () => router.back()
-  const handleAddExercise = () => router.push("/registerexercise")
+  const handleAddMindfulness = () => router.push("/mindfulness/register")
 
   return (
+    <PaperProvider>
     <SafeAreaView style={styles.container}>
       <Header avatarChar="A" />
-      <HeaderWithOptions title="Atividade" onBackPress={handleBack} onOptionPress={() => {}} />
+      <HeaderWithOptions title="Mindfulness" onBackPress={handleBack} onOptionPress={() => {}} />
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <DateNavigator
-          currentDate={currentDisplayDate}
           mode="week"
+          currentDate={currentDisplayDate}
           onDateChange={setCurrentDisplayDate}
         />
 
         <SummarySection
-          activityType="exercise"
+          activityType="mindfulness"
           completedDays={completedDays}
-          totalExercises={totalExercises}
+          totalExercises={totalLogs}
         />
 
         <WeekDaysContainer weekDaysDisplay={weekDaysDisplay} />
 
         <ActivityHistorySection
-          type="exercise"
+          type="mindfulness"
           loading={loading}
-          logs={exerciseLogs}
+          logs={mindfulnessLogs}
           error={error}
         />
       </ScrollView>
 
-      <TouchableOpacity style={styles.fab} onPress={handleAddExercise}>
+      <TouchableOpacity style={styles.fab} onPress={handleAddMindfulness}>
         <MaterialCommunityIcons name="plus" size={28} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
+    </PaperProvider>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFF",
+    backgroundColor: "#fff",
   },
   scrollView: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
   },
   fab: {
     position: "absolute",
@@ -152,4 +158,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ExerciseActivityScreen
+export default MindfulnessActivityScreen

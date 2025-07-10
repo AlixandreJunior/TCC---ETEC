@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
+from django.utils.dateparse import parse_date
+
 
 from apps.physical_health.serializers.exercise import ExerciseSerializer, ExerciseLogWriteSerializer, ExerciseLogReadSerializer
 from apps.physical_health.models.exercise import Exercise, ExerciseLog
@@ -28,10 +30,18 @@ class ExerciseLogView(ListAPIView):
     
     def get_queryset(self):
         queryset = ExerciseLog.objects.filter(user = self.request.user)
-        type = self.request.GET.get('type')
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
 
-        if type:
-            queryset = queryset.filter(exercise__type = type)
+        if start_date:
+            start_date_parsed = parse_date(start_date)
+        if start_date_parsed:
+            queryset = queryset.filter(datetime__date__gte=start_date_parsed)
+
+        if end_date:
+            end_date_parsed = parse_date(end_date)
+            if end_date_parsed:
+                queryset = queryset.filter(datetime__date__lte=end_date_parsed)
 
         if not queryset:
             raise NotFound("Registros de Exercícios não encontrados.")

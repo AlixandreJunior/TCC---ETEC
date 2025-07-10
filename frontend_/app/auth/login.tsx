@@ -2,79 +2,58 @@ import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
-  Dimensions,
+  SafeAreaView,
   ScrollView,
+  Dimensions,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { createAccount } from '@/services/user/createAccount';
+import { Mail, Lock } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { login as loginService } from '@/services/auth/login';
 import MintroLogo from '@/components/Layout/MintroLogo';
 import { EntryFormCard } from '@/components/Cards/EntryFormCard';
 import { EntryInput } from '@/components/Inputs/EntryInput';
-import { Lock, Mail } from 'lucide-react-native';
+import { useAuth } from '@/context/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
-export default function SignUpScreen() {
-  const [name, setName] = useState('');
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
 
-  const handleSubmit = async () => {
-    setError('');
+  const { login } = useAuth(); 
 
-    if (!name.trim()) {
-      setError('Nome é obrigatório');
-      return;
-    }
-    if (!email.trim()) {
-      setError('Email é obrigatório');
-      return;
-    }
-    if (password.length < 6) {
-      setError('Senha deve ter pelo menos 6 caracteres');
-      return;
-    }
+  const handleLogin = async () => {
     try {
-      await createAccount(name, email, password);
-      router.push("/(tabs)/mental");
+      const data = await loginService(email, password);
+      login(data.access, data.refresh);
     } catch (error: any) {
+      setError(error.message);
       Alert.alert("Erro", error.message || "Erro inesperado ao fazer login.");
     }
   };
 
-  const handleBackToLogin = () => {
-    router.push('/login');
+  const handleCreateAccount = () => {
+    router.push('/auth/signup');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <MintroLogo />
-
         <View style={styles.content}>
           <EntryFormCard
-            welcomeText='Criar nova conta!'
-            subtitleText='Preencha os dados para começar'
+            welcomeText='Bem-vindo de volta!'
+            subtitleText='Entre na sua conta para continuar'
             error={error}
-            handleSubmit={handleSubmit}
-            textSubmit='Criar conta'
-            handleBack={handleBackToLogin}
-            backText='Já tem uma conta?'
-            backLink='Entrar'
+            handleSubmit={handleLogin}
+            textSubmit='Entrar'
+            handleBack={handleCreateAccount}
+            backText='Não tem uma conta?'
+            backLink='Criar conta'
           >
-            <EntryInput
-              labelText='Nome de Usuário'
-              keyboardType='default'
-              onChange={setName}
-              value={name}
-              placeholder='Digite seu nome completo'
-            />
-
             <EntryInput
               labelText='Email'
               keyboardType='email-address'
@@ -92,7 +71,7 @@ export default function SignUpScreen() {
               placeholder='Digite sua senha'
               secureText={{
                 showSecureText: showPassword,
-                setShowSecureText: () => setShowPassword(!showPassword),
+                setShowSecureText: () => setShowPassword(!showPassword)
               }}
               icon={<Lock size={20} color="#9CA3AF" style={styles.inputIcon} />}
             />
@@ -106,7 +85,7 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9F8',
+    backgroundColor: '#F8F9f8',
   },
   scrollContent: {
     flexGrow: 1,
@@ -115,7 +94,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: width * 0.06,
-    paddingBottom: height * 0.05,
+    paddingBottom: height * 0.05, 
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -193,7 +193,7 @@ const CreateDiaryScreen = () => {
       await createDiary(formData);
 
       Alert.alert("Sucesso", "Diário criado com sucesso!");
-      router.back();
+      router.replace('/(tabs)/mental');
 
     } catch (error: any) {
       const errorMessage = error.message || "Erro ao criar diário. Tente novamente.";
@@ -229,7 +229,7 @@ const CreateDiaryScreen = () => {
   return (
     <View style={styles.container}>
       <Header avatarChar="A" />
-      <FormHeader title="Novo Diário" onBackPress={() => router.back()} onSavePress={handleSave} />
+      <FormHeader title="Novo Diário" onBackPress={() => router.replace('/(tabs)/mental')} onSavePress={handleSave} />
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <MainInput
@@ -288,7 +288,7 @@ const CreateDiaryScreen = () => {
 
         {loadingObjectives ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Objetivos</Text>+
+            <Text style={styles.sectionTitle}>Objetivos</Text>
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : errorObjectives ? (
