@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
-import NotificationIcon from './Icons/ChatIcon';
+import NotificationIcon from '../Icons/ChatIcon';
 
 interface HeaderProps {
   avatarChar: string;

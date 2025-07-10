@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import DiaryEntryCard from './DiaryEntryCard';
+import DiaryEntryCard from './Cards/DiaryEntryCard';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MoodType } from '@/types/mental/diary'; // Ajuste o caminho
 

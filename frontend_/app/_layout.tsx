@@ -9,62 +9,47 @@ import {
 } from '@expo-google-fonts/poppins';
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useState } from 'react';
-import { getToken } from '../stores/authStore'; // Ensure this path is correct based on your project structure
+import { getToken } from '../stores/authStore';
 
-/**
- * AuthGuard Component
- * This component manages authentication checks and redirects users.
- * It is designed to be placed within the RootLayout to protect routes.
- */
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  // State to track if the authentication check has completed
   const [isAuthReady, setIsAuthReady] = useState(false);
-  // State to store the authentication status (true if logged in, false otherwise)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // Hook to get the current URL segments (e.g., ['login'], ['(tabs)', 'home'])
   const segments = useSegments();
 
-  // useEffect for initial authentication check when the component mounts
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const token = await getToken();
-        // Set isAuthenticated based on whether a token exists
         setIsAuthenticated(!!token);
       } catch (e) {
-        console.error("Error checking authentication token:", e);
-        setIsAuthenticated(false); // Assume not authenticated on error
+        console.error("Erro ao verificar token:", e);
+        setIsAuthenticated(false);
       } finally {
-        setIsAuthReady(true); // Mark authentication check as complete
+        setIsAuthReady(true);
       }
     };
 
     checkAuth();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
-  // useEffect for handling navigation based on authentication status
   useEffect(() => {
-    // Wait until the initial authentication check is complete
-    if (!isAuthReady) {
-      return;
+    if (!isAuthReady) return;
+
+    const segment = segments[0] || '';
+    const publicRoutes = ['login', 'signup', 'index'];
+
+    const isPublic = publicRoutes.includes(segment);
+
+    // Somente redireciona se estiver em rota errada
+    if (!isAuthenticated && !isPublic) {
+      router.replace('/login');
     }
 
-    // Determine the current top-level segment (e.g., 'login', '(tabs)', 'index')
-    const currentSegment = segments[0];
-    // Define routes that are publicly accessible (don't require authentication)
-    const publicRoutes = ['login', 'signup', 'index']; // 'index' corresponds to '/'
-
-    // Check if the current route is one of the public routes
-    const isPublicRoute = publicRoutes.includes(currentSegment);
-
-    if (!isAuthenticated && !isPublicRoute) {
-      router.replace('/login');
-    } else if (isAuthenticated && isPublicRoute) {
+    if (isAuthenticated && isPublic) {
       router.replace('/(tabs)/mental');
     }
-  }, [isAuthReady, isAuthenticated, segments]); // Re-run this effect when auth state or route segments change
+  }, [isAuthReady, isAuthenticated, segments]);
 
-  // Show a loading indicator while the authentication check is in progress
   if (!isAuthReady) {
     return (
       <View style={styles.loadingContainer}>
@@ -73,15 +58,9 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Render children (the Stack navigator) once authentication is ready
   return <>{children}</>;
 }
 
-/**
- * RootLayout Component
- * This is the main layout component for your Expo application.
- * It loads fonts and sets up the main navigation stack with an authentication guard.
- */
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -90,7 +69,6 @@ export default function RootLayout() {
     Poppins_700Bold,
   });
 
-  // Show a loading indicator while fonts are loading
   if (!fontsLoaded) {
     return (
       <SafeAreaProvider>
@@ -103,16 +81,14 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      {/* Wrap the main navigation Stack with the AuthGuard */}
       <AuthGuard>
         <Stack screenOptions={{ headerShown: false }}>
-          {/* Public Routes (accessible without login) */}
+          {/* Rotas públicas */}
           <Stack.Screen name="index" />
           <Stack.Screen name="login" />
           <Stack.Screen name="signup" />
 
-          {/* Authenticated Routes (require login) */}
-          {/* Assuming '(tabs)' is the main part of your app for logged-in users */}
+          {/* Rotas protegidas */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </AuthGuard>
@@ -125,6 +101,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff', // Or any background color you prefer for the loading screen
+    backgroundColor: '#fff',
   },
 });

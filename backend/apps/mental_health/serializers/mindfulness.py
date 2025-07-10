@@ -7,7 +7,6 @@ class MindfulnessSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'type']
 
 class MindfulnessLogReadSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
     mindfulness = MindfulnessSerializer()
 
     class Meta:

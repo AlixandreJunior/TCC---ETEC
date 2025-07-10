@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import CompletionIcon from './Icons/CompletionIon';
+import CompletionIcon from '../Icons/CompletionIon';
 
 interface ObjectiveDisplayCardProps {
   objectiveTitle: string;
