@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
+from django.utils.dateparse import parse_date
 
 from apps.mental_health.serializers.mindfulness import MindfulnessSerializer, MindfulnessLogWriteSerializer, MindfulnessLogReadSerializer
 from apps.mental_health.models.mindfulness import Mindfulness, MindfulnessLog
@@ -29,9 +30,19 @@ class MindfulnessLogListView(ListAPIView):
 
     def get_queryset(self):
         queryset = MindfulnessLog.objects.filter(user = self.request.user)
-        type = self.request.GET.get('type')
-        if type:
-            queryset = queryset.filter(mindfulness__type = type)
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+
+        if start_date:
+            start_date_parsed = parse_date(start_date)
+        if start_date_parsed:
+            queryset = queryset.filter(datetime__date__gte=start_date_parsed)
+
+        if end_date:
+            end_date_parsed = parse_date(end_date)
+            if end_date_parsed:
+                queryset = queryset.filter(datetime__date__lte=end_date_parsed)
+                
         if not queryset:
             raise NotFound("Registros de Mindfulness não encontrados.")
         return queryset

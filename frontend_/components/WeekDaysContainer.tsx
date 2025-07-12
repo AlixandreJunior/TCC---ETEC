@@ -17,8 +17,8 @@ interface Props {
 export const WeekDaysContainer: React.FC<Props> = ({ weekDaysDisplay }) => {
   return (
     <View style={styles.weekDaysContainer}>
-      {weekDaysDisplay.map((day) => (
-        <View key={day.id} style={styles.dayContainer}>
+      {weekDaysDisplay.map((day, index) => (
+        <View key={`${day.id} - ${index}`} style={styles.dayContainer}>
           <View
             style={[
               styles.dayIndicator,

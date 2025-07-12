@@ -1,4 +1,4 @@
-import LoginScreen from "@/screens/EntryPages/LoginScreen";
+import LoginScreen from "./auth/login";
 
 export default function App() {
   return <LoginScreen />;

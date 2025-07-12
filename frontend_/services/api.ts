@@ -1,69 +1,75 @@
-import axios, { AxiosRequestConfig, AxiosError } from 'axios'; 
-import { clearTokens, getToken, getRefreshToken, saveToken } from '../stores/authStore';
-import { router } from 'expo-router';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 
-const apiUrl = 'http://localhost:8000/api/'; 
+const apiUrl = 'http://192.168.1.7:8000/api/';
 
 const api = axios.create({
   baseURL: apiUrl,
   timeout: 10000
 });
 
-//@ts-ignore
-api.interceptors.request.use(async (config: AxiosRequestConfig) => {
-  try {
-    const token = await getToken();
-    if (token) {
-      if (!config.headers) {
-        config.headers = {};
-      }
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  } catch (error) {
-    console.error("Erro ao recuperar accessToken do SecureStore:", error);
-  }
-  return config;
-});
+let onLogout: (() => void) | null = null;
+let getTokens: (() => Promise<{ access: string | null; refresh: string | null }>) | null = null;
+let saveTokens: ((access: string, refresh: string) => Promise<void>) | null = null;
+ 
 
+export const setAuthHandlers = (handlers: {
+  onLogout: () => void;
+  getTokens?: () => Promise<{ access: string | null; refresh: string | null }>;
+  saveTokens?: (access: string, refresh: string) => Promise<void>;
+}) => {
+  onLogout = handlers.onLogout;
+  getTokens = handlers.getTokens || null;
+  saveTokens = handlers.saveTokens || null;
+};
+
+//@ts-ignore
 api.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => { 
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }; 
+  async (error: AxiosError) => {
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; 
-      try {
-        const refreshToken = await getRefreshToken();
+      originalRequest._retry = true;
 
-        if (!refreshToken) {
-          router.push('/login')
+      if (!getTokens || !onLogout) {
+        onLogout?.();
+        return Promise.reject(error);
+      }
+
+      try {
+        // Pega refresh token atual
+        const { refresh } = await getTokens();
+
+        if (!refresh) {
+          onLogout();
           return Promise.reject(error);
         }
 
-        const response = await axios.post<any>(`${apiUrl}refresh/`, {
-          refresh: refreshToken,
-        });
+        // Faz o refresh no backend
+        const res = await axios.post(`${apiUrl}refresh/`, { refresh });
 
-        const newAccessToken = response.data.access;
-        const newRefreshToken = response.data.refresh;
+        const newAccess = res.data.access;
+        const newRefresh = res.data.refresh;
 
-       saveToken(newAccessToken, newRefreshToken)
-
-        if (!originalRequest.headers) {
-          originalRequest.headers = {};
+        if (typeof saveTokens === 'function') {
+          await saveTokens(newAccess, newRefresh);
         }
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        // Atualiza o header com o novo access token
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+        }
 
         return api(originalRequest);
-      } catch (refreshError: any) { 
-        console.warn('Erro ao tentar renovar token:', refreshError.response?.data || refreshError.message);
-        await clearTokens()
-        return Promise.reject(refreshError);
+      } catch (e) {
+        onLogout();
+        return Promise.reject(e);
       }
     }
 
     return Promise.reject(error);
   }
 );
+
 
 export default api;

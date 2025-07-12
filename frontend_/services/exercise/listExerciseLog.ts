@@ -1,4 +1,3 @@
-// services/exercise/listLogsThisWeek.ts
 import { ExerciseLog } from "@/types/health/exercise";
 import api from "../api";
 import { startOfWeek, endOfWeek, format } from "date-fns";

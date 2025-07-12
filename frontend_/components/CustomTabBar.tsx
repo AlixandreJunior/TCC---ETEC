@@ -18,10 +18,10 @@ export default function CustomTabBar() {
       route: "/(tabs)/mental",
     },
     {
-      name: "index",
+      name: "activity",
       title: "Saúde",
       icon: Heart,
-      route: "/(tabs)",
+      route: "/(tabs)/activity",
     },
     {
       name: "profile",
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     height: 90,
     paddingTop: 15,
-    paddingBottom: 25,
+    paddingBottom: 15,
     paddingHorizontal: 20,
     justifyContent: "space-around",
     alignItems: "center",
