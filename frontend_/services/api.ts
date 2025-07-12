@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 
-const apiUrl = 'http://192.168.1.7:8000/api/';
+const apiUrl = 'http://192.168.1.6:8000/api/';
 
 const api = axios.create({
   baseURL: apiUrl,
