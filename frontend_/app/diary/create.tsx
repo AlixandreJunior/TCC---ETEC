@@ -45,7 +45,7 @@ const CreateDiaryScreen = () => {
 
   const [moods, setMoods] = useState<MoodOption[]>([
     { id: "Excelente", label: "Excelente", imageSource: require("@/assets/images/mood-excellent.png"), isSelected: false },
-    { id: "Bom", label: "Bem", imageSource: require("@/assets/images/mood-smile.png"), isSelected: false },
+    { id: "Bom", label: "Bom", imageSource: require("@/assets/images/mood-smile.png"), isSelected: false },
     { id: "Neutro", label: "Neutro", imageSource: require("@/assets/images/mood-neutral.png"), isSelected: false },
     { id: "Ruim", label: "Mal", imageSource: require("@/assets/images/mood-sad.png"), isSelected: false },
     { id: "Péssimo", label: "Horrível", imageSource: require("@/assets/images/mood-cry.png"), isSelected: false },
